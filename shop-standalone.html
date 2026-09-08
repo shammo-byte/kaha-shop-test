@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shop - Kaha Mind</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Borel&family=EB+Garamond:wght@400;500&display=swap">
+<link rel="stylesheet" href="styles.css">
+
+<style>
+/* ==================================================================
+   SHOP — quantity control, order summary, payment step
+   Append to styles.css. Uses the existing navy / coral / EB Garamond
+   system; adjust the two variables below if your tokens are named
+   differently elsewhere in the file.
+   ================================================================== */
+
+.shop-page {
+  --shop-ink: #1e3a5f;
+  --shop-accent: #EC6454;
+  --shop-rule: rgba(30, 58, 95, 0.18);
+}
+
+/* ------------------------------------------------------- quantity */
+
+.qty-row {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  margin: 1.5rem 0 2rem;
+}
+
+.qty-label {
+  font-size: 0.95rem;
+  color: var(--shop-ink);
+  opacity: 0.75;
+}
+
+.qty-control {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid var(--shop-rule);
+  border-radius: 999px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.qty-btn {
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font: inherit;
+  font-size: 1.2rem;
+  line-height: 1;
+  padding: 0.55rem 1rem;
+  color: var(--shop-ink);
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.qty-btn:hover:not(:disabled) { background: var(--shop-accent); color: #fff; }
+.qty-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.qty-btn:focus-visible { outline: 2px solid var(--shop-accent); outline-offset: -2px; }
+
+.qty-input {
+  width: 3.2rem;
+  border: 0;
+  border-left: 1px solid var(--shop-rule);
+  border-right: 1px solid var(--shop-rule);
+  text-align: center;
+  font: inherit;
+  font-size: 1rem;
+  color: var(--shop-ink);
+  background: none;
+  -moz-appearance: textfield;
+}
+
+.qty-input::-webkit-outer-spin-button,
+.qty-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.qty-input:focus-visible { outline: 2px solid var(--shop-accent); outline-offset: -2px; }
+
+.qty-total {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--shop-ink);
+}
+
+/* -------------------------------------------------- order summary */
+
+.order-summary {
+  align-self: start;
+  position: sticky;
+  top: 6rem;
+  padding: 1.75rem;
+  border: 1px solid var(--shop-rule);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.summary-title {
+  margin: 0 0 1.25rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--shop-ink);
+}
+
+.summary-lines { margin: 0; }
+
+.summary-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.45rem 0;
+  font-size: 0.95rem;
+  color: var(--shop-ink);
+}
+
+.summary-line dt,
+.summary-line dd { margin: 0; }
+.summary-line dd { text-align: right; white-space: nowrap; }
+
+.summary-total {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 1rem 0 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--shop-rule);
+  font-size: 1.15rem;
+  color: var(--shop-ink);
+}
+
+.summary-edit {
+  margin-top: 1.25rem;
+  padding: 0;
+  font-size: 0.9rem;
+}
+
+/* --------------------------------------------------------- payment */
+
+.pay-actions {
+  margin-top: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.pay-note {
+  margin: 0;
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+
+.shop-btn.is-busy {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.shop-btn.is-busy::after {
+  content: "\2026";
+  margin-left: 0.35rem;
+}
+
+/* ------------------------------------------------------ responsive */
+
+@media (max-width: 860px) {
+  .order-summary { position: static; margin-top: 2rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .qty-btn, .shop-btn { transition: none; }
+}
+
+/* If .checkout-grid in styles.css is currently a single column (the old
+   page had an empty second column), the summary needs somewhere to sit:
+
+.checkout-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 20rem;
+  gap: 3rem;
+  align-items: start;
+}
+@media (max-width: 860px) {
+  .checkout-grid { grid-template-columns: 1fr; }
+}
+*/
+</style>
+<script>document.documentElement.className += " js";</script>
+</head>
+<body class="shop-page">
+
+  <header class="home-header">
+    <a href="index.html" class="home-logo" aria-label="Kaha Mind home">
+      <span>Kaha</span><span>Mind</span>
+    </a>
+
+    <nav class="home-nav" aria-label="Main">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="dossier.html">Kaha et al.</a></li>
+        <li><a href="shop.html" aria-current="page">Shop</a></li>
+        <li><a href="faq.html">FAQs</a></li>
+        <li><a href="edge.html">The Edge</a></li>
+        <li><a href="workshops.html">Workshops</a></li>
+      </ul>
+    </nav>
+
+    <a class="book-btn" href="contact.html">Book a<br>Session</a>
+
+    <button class="menu-toggle home-menu-toggle" type="button" id="menu-toggle"
+            aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <nav class="mobile-nav" id="mobile-nav" aria-label="Main">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="dossier.html">Kaha et al.</a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="faq.html">FAQs</a></li>
+      <li><a href="edge.html">The Edge</a></li>
+      <li><a href="workshops.html">Workshops</a></li>
+      <li><a href="contact.html">Book a session</a></li>
+    </ul>
+  </nav>
+
+  <main>
+
+    <!-- ---------------------------------------------------------
+         Page title
+         --------------------------------------------------------- -->
+    <section class="page-hero">
+      <h1 class="page-title" data-reveal>Kaha Shop</h1>
+    </section>
+
+    <!-- ============================================================
+         STEP 1 — PRODUCT
+         ============================================================ -->
+    <section class="shop-step" id="stepProduct">
+      <div class="product">
+        <div class="product-image" data-reveal>
+          <img src="cap.jpg" alt="Metal Health Cap, dark denim cap with red gothic embroidery reading METAL HEALTH"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="product-image-fallback" style="display:none;">
+            <span>Metal<br>Health<br>Cap</span>
+          </div>
+        </div>
+
+        <div class="product-details" data-reveal>
+          <p class="product-eyebrow">In stock &middot; Ships across India</p>
+          <h2 class="product-title">Metal Health Cap</h2>
+          <p class="product-price">&#8377;<span id="unitPriceLabel">1,499</span></p>
+          <p class="product-blurb">
+            Dark denim, six panels, with METAL HEALTH embroidered across the front
+            in red. Adjustable strap, one size, unisex. Made in small batches.
+          </p>
+
+          <div class="qty-row">
+            <span class="qty-label" id="qtyLabel">Quantity</span>
+            <div class="qty-control" role="group" aria-labelledby="qtyLabel">
+              <button type="button" class="qty-btn" id="qtyMinus" aria-label="One fewer">&minus;</button>
+              <input type="number" class="qty-input" id="qty" value="1" min="1" max="10" step="1"
+                     inputmode="numeric" aria-label="Quantity">
+              <button type="button" class="qty-btn" id="qtyPlus" aria-label="One more">+</button>
+            </div>
+            <p class="qty-total">Total <strong>&#8377;<span id="qtyTotalLabel">1,499</span></strong></p>
+          </div>
+
+          <button type="button" class="pill pill-lg submit-btn shop-btn" id="goToDelivery">Buy now</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         STEP 2 — DELIVERY DETAILS
+         ============================================================ -->
+    <section class="shop-step" id="stepDelivery" hidden>
+      <div class="checkout-grid">
+        <div class="checkout-main">
+          <p class="step-eyebrow">Step 1 of 2</p>
+          <h2 class="step-title">Delivery details</h2>
+
+          <form class="contact-form" id="deliveryForm" novalidate>
+            <div class="form-group">
+              <label for="custName">Full name *</label>
+              <input type="text" id="custName" name="name" autocomplete="name" required>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="custEmail">Email *</label>
+                <input type="email" id="custEmail" name="email" autocomplete="email" required>
+              </div>
+              <div class="form-group">
+                <label for="custPhone">Phone number *</label>
+                <input type="tel" id="custPhone" name="phone" inputmode="numeric"
+                       autocomplete="tel" maxlength="10" placeholder="10-digit mobile number" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="addr1">Address line 1 *</label>
+              <input type="text" id="addr1" name="address1" autocomplete="address-line1"
+                     placeholder="House / flat number, building, street" required>
+            </div>
+
+            <div class="form-group">
+              <label for="addr2">Address line 2</label>
+              <input type="text" id="addr2" name="address2" autocomplete="address-line2"
+                     placeholder="Area, landmark (optional)">
+            </div>
+
+            <div class="form-row form-row-3">
+              <div class="form-group">
+                <label for="city">City *</label>
+                <input type="text" id="city" name="city" autocomplete="address-level2" required>
+              </div>
+              <div class="form-group">
+                <label for="state">State *</label>
+                <select id="state" name="state" required>
+                  <option value="" disabled selected></option>
+                  <option>Andhra Pradesh</option>
+                  <option>Arunachal Pradesh</option>
+                  <option>Assam</option>
+                  <option>Bihar</option>
+                  <option>Chhattisgarh</option>
+                  <option>Delhi</option>
+                  <option>Goa</option>
+                  <option>Gujarat</option>
+                  <option>Haryana</option>
+                  <option>Himachal Pradesh</option>
+                  <option>Jharkhand</option>
+                  <option>Karnataka</option>
+                  <option>Kerala</option>
+                  <option>Madhya Pradesh</option>
+                  <option>Maharashtra</option>
+                  <option>Manipur</option>
+                  <option>Meghalaya</option>
+                  <option>Mizoram</option>
+                  <option>Nagaland</option>
+                  <option>Odisha</option>
+                  <option>Punjab</option>
+                  <option>Rajasthan</option>
+                  <option>Sikkim</option>
+                  <option>Tamil Nadu</option>
+                  <option>Telangana</option>
+                  <option>Tripura</option>
+                  <option>Uttar Pradesh</option>
+                  <option>Uttarakhand</option>
+                  <option>West Bengal</option>
+                  <option>Andaman &amp; Nicobar Islands</option>
+                  <option>Chandigarh</option>
+                  <option>Dadra &amp; Nagar Haveli and Daman &amp; Diu</option>
+                  <option>Jammu &amp; Kashmir</option>
+                  <option>Ladakh</option>
+                  <option>Lakshadweep</option>
+                  <option>Puducherry</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="pincode">PIN code *</label>
+                <input type="text" id="pincode" name="pincode" inputmode="numeric"
+                       maxlength="6" autocomplete="postal-code" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="deliveryNotes">Delivery notes</label>
+              <textarea id="deliveryNotes" name="notes" rows="3"
+                        placeholder="Anything the courier should know (optional)"></textarea>
+            </div>
+
+            <div id="deliveryError" class="form-error" hidden></div>
+
+            <div class="step-actions">
+              <button type="button" class="text-btn" id="backToProduct">&larr; Back to product</button>
+              <button type="submit" class="pill pill-lg submit-btn shop-btn">Continue to payment</button>
+            </div>
+          </form>
+        </div>
+
+        <aside class="order-summary" aria-label="Order summary">
+          <h3 class="summary-title">Order summary</h3>
+          <dl class="summary-lines">
+            <div class="summary-line">
+              <dt data-summary="name">Metal Health Cap</dt>
+              <dd>&#8377;<span data-summary="unit"></span> &times; <span data-summary="qty"></span></dd>
+            </div>
+            <div class="summary-line">
+              <dt>Subtotal</dt>
+              <dd>&#8377;<span data-summary="subtotal"></span></dd>
+            </div>
+            <div class="summary-line">
+              <dt>Shipping</dt>
+              <dd data-summary="shipping"></dd>
+            </div>
+          </dl>
+          <p class="summary-total">
+            <span>Total</span>
+            <span>&#8377;<span data-summary="total"></span></span>
+          </p>
+          <button type="button" class="text-btn summary-edit" data-summary-edit>Change quantity</button>
+        </aside>
+
+      </div>
+    </section>
+
+    <!-- ============================================================
+         STEP 3 — PAYMENT
+         ============================================================ -->
+    <section class="shop-step" id="stepPayment" hidden>
+      <div class="checkout-grid">
+        <div class="checkout-main">
+          <p class="step-eyebrow">Step 2 of 2</p>
+          <h2 class="step-title">Payment</h2>
+          <p class="step-intro">Your delivery details are saved. Check the summary, then pay to place the order.</p>
+
+          <div class="pay-handoff">
+            <p class="pay-handoff-lead">Everything below is handled by Razorpay:</p>
+            <ul class="pay-accepted">
+              <li>UPI, including Google Pay, PhonePe, Paytm and any other UPI app</li>
+              <li>Debit and credit cards, including Visa, Mastercard, RuPay, Amex</li>
+              <li>Net banking, wallets and EMI</li>
+            </ul>
+
+            <div class="pay-actions">
+              <button type="button" class="pill pill-lg submit-btn shop-btn" id="payNow">
+                Pay &#8377;<span id="payAmountLabel">1,499</span>
+              </button>
+              <p class="pay-note">The Razorpay window opens on this page. Nothing is charged until you confirm it there.</p>
+            </div>
+
+            <p class="pay-fallback" id="payFallback" hidden>
+              The payment window couldn't load. Reload the page, or write to
+              <a href="mailto:hello@kahamind.com">hello@kahamind.com</a> and we'll send you a payment link.
+            </p>
+          </div>
+
+          <div id="paymentError" class="form-error" hidden></div>
+
+          <div class="step-actions">
+            <button type="button" class="text-btn" id="backToDelivery">&larr; Edit delivery details</button>
+          </div>
+
+          <p class="secure-note">
+            Payments are processed by Razorpay over an encrypted connection.
+            Kaha Mind never sees or stores your card or UPI details.
+          </p>
+        </div>
+
+        <aside class="order-summary" aria-label="Order summary">
+          <h3 class="summary-title">Order summary</h3>
+          <dl class="summary-lines">
+            <div class="summary-line">
+              <dt data-summary="name">Metal Health Cap</dt>
+              <dd>&#8377;<span data-summary="unit"></span> &times; <span data-summary="qty"></span></dd>
+            </div>
+            <div class="summary-line">
+              <dt>Subtotal</dt>
+              <dd>&#8377;<span data-summary="subtotal"></span></dd>
+            </div>
+            <div class="summary-line">
+              <dt>Shipping</dt>
+              <dd data-summary="shipping"></dd>
+            </div>
+          </dl>
+          <p class="summary-total">
+            <span>Total</span>
+            <span>&#8377;<span data-summary="total"></span></span>
+          </p>
+          <button type="button" class="text-btn summary-edit" data-summary-edit>Change quantity</button>
+        </aside>
+
+      </div>
+    </section>
+
+    <!-- ============================================================
+         STEP 4 — CONFIRMATION
+         ============================================================ -->
+    <section class="shop-step" id="stepDone" hidden>
+      <div class="order-done">
+        <div class="done-mark" aria-hidden="true">&#10003;</div>
+        <h2 class="step-title">Order received</h2>
+        <p class="done-text">
+          Thanks, <span id="doneName">friend</span>. We have your delivery details and
+          we'll write to <span id="doneEmail">your email</span> when your order ships.
+        </p>
+        <p class="done-id" id="doneOrderLine" hidden>Your order number: <strong id="doneOrderId"></strong></p>
+        <p class="done-id" id="doneSummaryLine" hidden><span id="doneQty"></span> &middot; &#8377;<span id="doneTotal"></span> paid</p>
+        <p class="form-error" id="doneWarning" hidden></p>
+        <p class="done-id">Razorpay will email you a payment receipt. Keep your order number handy if you need to write to us.</p>
+        <p class="done-text">
+          Questions about your order? Write to
+          <a href="mailto:hello@kahamind.com">hello@kahamind.com</a>.
+        </p>
+        <button type="button" class="pill pill-lg submit-btn shop-btn" id="shopAgain">Back to the shop</button>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer home-footer">
+    <div class="footer-brand">
+      <p class="footer-wordmark" data-reveal>
+        <span>Kaha</span>
+        <span>Mind</span>
+      </p>
+      <p class="footer-contact" data-reveal>Reach out to us at<br>hello@kahamind.com</p>
+    </div>
+
+    <img class="art footer-art" id="footer-art" src="art_11.png" alt="" aria-hidden="true">
+
+    <nav class="footer-links" aria-label="Footer">
+      <div class="footer-col" data-reveal>
+        <h2>Nav</h2>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="dossier.html">Kaha et al.</a></li>
+          <li><a href="shop.html">Shop</a></li>
+          <li><a href="faq.html">FAQs</a></li>
+          <li><a href="edge.html">The Edge</a></li>
+          <li><a href="workshops.html">Workshops</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col" data-reveal>
+        <h2>Socials</h2>
+        <ul>
+          <li><a href="https://www.instagram.com/kaha.mind/" target="_blank" rel="noopener">Instagram</a></li>
+          <li><a href="https://linkedin.com/" target="_blank" rel="noopener">Linked in</a></li>
+          <li><a href="https://x.com/kahamind" target="_blank" rel="noopener">X</a></li>
+        </ul>
+      </div>
+    </nav>
+  </footer>
+
+  <script>
+    /* mobile menu */
+    (function () {
+      var toggle = document.getElementById("menu-toggle");
+      var panel = document.getElementById("mobile-nav");
+      if (!toggle || !panel) return;
+
+      function setOpen(open) {
+        document.body.classList.toggle("nav-open", open);
+        toggle.setAttribute("aria-expanded", open ? "true" : "false");
+        toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+      }
+
+      toggle.addEventListener("click", function (e) {
+        e.stopPropagation();
+        setOpen(!document.body.classList.contains("nav-open"));
+      });
+
+      document.addEventListener("click", function (e) {
+        if (document.body.classList.contains("nav-open") &&
+            !panel.contains(e.target) && !toggle.contains(e.target)) setOpen(false);
+      });
+
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") setOpen(false);
+      });
+
+      panel.addEventListener("click", function (e) {
+        if (e.target.closest("a")) setOpen(false);
+      });
+    })();
+  </script>
+
+  <script>
+    /* the footer piece: draggable inside the footer */
+    (function () {
+      var el = document.getElementById("footer-art");
+      var bounds = document.querySelector(".home-footer");
+      if (!el || !bounds) return;
+
+      var dragging = false;
+      var startX = 0, startY = 0, offX = 0, offY = 0;
+
+      function clamp(v, min, max) { return v < min ? min : (v > max ? max : v); }
+
+      function down(e) {
+        dragging = true;
+        el.style.setProperty("--tilt", ((Math.random() * 14) - 7).toFixed(1) + "deg");
+        el.classList.add("is-held");
+        el.style.zIndex = 50;
+        var p = e.touches ? e.touches[0] : e;
+        startX = p.clientX; startY = p.clientY;
+        offX = parseFloat(el.dataset.dx || 0);
+        offY = parseFloat(el.dataset.dy || 0);
+        if (e.cancelable) e.preventDefault();
+      }
+
+      function move(e) {
+        if (!dragging) return;
+        var p = e.touches ? e.touches[0] : e;
+        var b = bounds.getBoundingClientRect();
+        var r = el.getBoundingClientRect();
+        var dx = offX + (p.clientX - startX);
+        var dy = offY + (p.clientY - startY);
+        var curDx = parseFloat(el.dataset.dx || 0);
+        var curDy = parseFloat(el.dataset.dy || 0);
+        var homeLeft = r.left - curDx;
+        var homeTop = r.top - curDy;
+        dx = clamp(dx, b.left - homeLeft, b.right - r.width - homeLeft);
+        dy = clamp(dy, b.top - homeTop, b.bottom - r.height - homeTop);
+        el.dataset.dx = dx; el.dataset.dy = dy;
+        el.style.left = dx + "px"; el.style.top = dy + "px";
+        if (e.cancelable) e.preventDefault();
+      }
+
+      function up() {
+        if (!dragging) return;
+        dragging = false;
+        el.classList.remove("is-held");
+        el.style.setProperty("--tilt", "0deg");
+      }
+
+      el.addEventListener("mousedown", down);
+      window.addEventListener("mousemove", move);
+      window.addEventListener("mouseup", up);
+      el.addEventListener("touchstart", down, { passive: false });
+      window.addEventListener("touchmove", move, { passive: false });
+      window.addEventListener("touchend", up);
+      el.addEventListener("dragstart", function (e) { e.preventDefault(); });
+    })();
+  </script>
+
+  <script>
+    /* the page fades up as soon as it is parsed. waiting on window
+       load meant this page lagged the others, because the payment
+       script and the product photo load after everything else. */
+    (function () {
+      function open() { document.body.classList.add("is-loaded"); }
+      requestAnimationFrame(function () { requestAnimationFrame(open); });
+    })();
+  </script>
+
+  <script>
+    (function () {
+      var items = document.querySelectorAll("[data-reveal]");
+      if (!("IntersectionObserver" in window)) {
+        for (var j = 0; j < items.length; j++) items[j].classList.add("is-visible");
+        return;
+      }
+      var observer = new IntersectionObserver(function (entries) {
+        var batch = 0;
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          entry.target.style.transitionDelay = (batch * 90) + "ms";
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+          batch++;
+        });
+      }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
+      items.forEach(function (el) { observer.observe(el); });
+    })();
+  </script>
+
+  <!-- Razorpay Checkout, then the step logic that drives it -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
+/* ------------------------------------------------------------------
+   Kaha Mind — shop checkout
+   Product -> delivery -> payment (Razorpay Checkout) -> confirmation.
+
+   The price here is only for display. The amount actually charged is
+   computed on the server in create-order.php, so editing this file in
+   a browser cannot change what anyone pays.
+   ------------------------------------------------------------------ */
+(function () {
+  "use strict";
+
+  var CONFIG = {
+    // Your Apps Script web app URL. Must end in /exec.
+    apiUrl: "https://script.google.com/macros/s/REPLACE_ME/exec",
+    productId: "metal-health-cap",
+    productName: "Metal Health Cap",
+    unitPrice: 1499,     // rupees, display only
+    shipping: 0,         // rupees, 0 = free
+    maxQty: 10,
+    themeColor: "#EC6454"
+  };
+
+  var $ = function (id) { return document.getElementById(id); };
+  var $$ = function (sel) { return Array.prototype.slice.call(document.querySelectorAll(sel)); };
+
+  var steps = {
+    product: $("stepProduct"),
+    delivery: $("stepDelivery"),
+    payment: $("stepPayment"),
+    done: $("stepDone")
+  };
+  if (!steps.product) return;
+
+  var state = {
+    qty: 1,
+    customer: null,
+    order: null,      // { orderRef, razorpayOrderId, amount, keyId }
+    paying: false
+  };
+
+  /* ---------------------------------------------------------- helpers */
+
+  function inr(n) {
+    return Number(n).toLocaleString("en-IN");
+  }
+
+  function total() {
+    return state.qty * CONFIG.unitPrice + CONFIG.shipping;
+  }
+
+  function showError(el, message) {
+    if (!el) return;
+    if (message) {
+      el.textContent = message;
+      el.hidden = false;
+    } else {
+      el.textContent = "";
+      el.hidden = true;
+    }
+  }
+
+  function goTo(name) {
+    Object.keys(steps).forEach(function (key) {
+      if (steps[key]) steps[key].hidden = (key !== name);
+    });
+    var target = steps[name];
+    if (!target) return;
+    // reveal animations run on [data-reveal]; make sure a re-shown step is visible
+    $$("[data-reveal]", target).forEach(function (el) { el.classList.add("is-visible"); });
+    var top = target.getBoundingClientRect().top + window.pageYOffset - 80;
+    window.scrollTo({ top: top < 0 ? 0 : top, behavior: "smooth" });
+  }
+
+  /* ------------------------------------------------------- quantity */
+
+  var qtyInput = $("qty");
+
+  function setQty(n) {
+    n = parseInt(n, 10);
+    if (isNaN(n) || n < 1) n = 1;
+    if (n > CONFIG.maxQty) n = CONFIG.maxQty;
+    state.qty = n;
+    if (qtyInput) qtyInput.value = n;
+    render();
+  }
+
+  function render() {
+    var t = total();
+    var qtyTotal = $("qtyTotalLabel");
+    if (qtyTotal) qtyTotal.textContent = inr(t);
+
+    var payLabel = $("payAmountLabel");
+    if (payLabel) payLabel.textContent = inr(t);
+
+    $$("[data-summary]").forEach(function (el) {
+      switch (el.getAttribute("data-summary")) {
+        case "name":     el.textContent = CONFIG.productName; break;
+        case "unit":     el.textContent = inr(CONFIG.unitPrice); break;
+        case "qty":      el.textContent = state.qty; break;
+        case "subtotal": el.textContent = inr(state.qty * CONFIG.unitPrice); break;
+        case "shipping": el.textContent = CONFIG.shipping ? "\u20B9" + inr(CONFIG.shipping) : "Free"; break;
+        case "total":    el.textContent = inr(t); break;
+      }
+    });
+
+    var minus = $("qtyMinus"), plus = $("qtyPlus");
+    if (minus) minus.disabled = state.qty <= 1;
+    if (plus) plus.disabled = state.qty >= CONFIG.maxQty;
+  }
+
+  if ($("qtyMinus")) $("qtyMinus").addEventListener("click", function () { setQty(state.qty - 1); });
+  if ($("qtyPlus")) $("qtyPlus").addEventListener("click", function () { setQty(state.qty + 1); });
+  if (qtyInput) {
+    qtyInput.addEventListener("input", function () { setQty(qtyInput.value); });
+    qtyInput.addEventListener("blur", function () { setQty(qtyInput.value); });
+  }
+
+  $$("[data-summary-edit]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      goTo("product");
+      if (qtyInput) qtyInput.focus();
+    });
+  });
+
+  /* ------------------------------------------------- step navigation */
+
+  if ($("goToDelivery")) {
+    $("goToDelivery").addEventListener("click", function () { goTo("delivery"); });
+  }
+  if ($("backToProduct")) {
+    $("backToProduct").addEventListener("click", function () { goTo("product"); });
+  }
+  if ($("backToDelivery")) {
+    $("backToDelivery").addEventListener("click", function () { goTo("delivery"); });
+  }
+  if ($("shopAgain")) {
+    $("shopAgain").addEventListener("click", function () {
+      state.customer = null;
+      state.order = null;
+      setQty(1);
+      var form = $("deliveryForm");
+      if (form) form.reset();
+      goTo("product");
+    });
+  }
+
+  /* -------------------------------------------------- delivery form */
+
+  var deliveryForm = $("deliveryForm");
+  var deliveryError = $("deliveryError");
+
+  function readDelivery() {
+    return {
+      name: ($("custName").value || "").trim(),
+      email: ($("custEmail").value || "").trim(),
+      phone: ($("custPhone").value || "").replace(/\D/g, ""),
+      address1: ($("addr1").value || "").trim(),
+      address2: ($("addr2").value || "").trim(),
+      city: ($("city").value || "").trim(),
+      state: $("state").value || "",
+      pincode: ($("pincode").value || "").replace(/\D/g, ""),
+      notes: ($("deliveryNotes").value || "").trim()
+    };
+  }
+
+  function firstProblem(d) {
+    if (d.name.length < 2) return ["Enter your full name.", "custName"];
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(d.email)) return ["Enter an email address we can send the confirmation to.", "custEmail"];
+    if (!/^[6-9]\d{9}$/.test(d.phone)) return ["Enter a 10-digit Indian mobile number.", "custPhone"];
+    if (d.address1.length < 5) return ["Enter the house or flat number, building and street.", "addr1"];
+    if (d.city.length < 2) return ["Enter your city.", "city"];
+    if (!d.state) return ["Choose your state.", "state"];
+    if (!/^\d{6}$/.test(d.pincode)) return ["Enter a 6-digit PIN code.", "pincode"];
+    return null;
+  }
+
+  if (deliveryForm) {
+    deliveryForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var d = readDelivery();
+      var problem = firstProblem(d);
+      if (problem) {
+        showError(deliveryError, problem[0]);
+        var field = $(problem[1]);
+        if (field) field.focus();
+        return;
+      }
+      showError(deliveryError, null);
+      state.customer = d;
+      state.order = null;          // details changed, so any old order is stale
+      render();
+      goTo("payment");
+    });
+  }
+
+  /* ------------------------------------------------------- payment */
+
+  var payBtn = $("payNow");
+  var paymentError = $("paymentError");
+  var payFallback = $("payFallback");
+
+  /*
+     Apps Script can't answer a CORS preflight, so this has to stay a
+     "simple" request: text/plain content type, no custom headers. The
+     body is still JSON and the script still parses it as JSON.
+  */
+  function post(action, body) {
+    body.action = action;
+    return fetch(CONFIG.apiUrl, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      redirect: "follow",
+      body: JSON.stringify(body)
+    }).then(function (res) {
+      return res.json().catch(function () {
+        throw new Error("The server sent something we couldn't read.");
+      }).then(function (data) {
+        if (!res.ok || data.ok === false) {
+          throw new Error(data && data.error ? data.error : "Something went wrong at our end.");
+        }
+        return data;
+      });
+    });
+  }
+
+  function setPaying(on) {
+    state.paying = on;
+    if (!payBtn) return;
+    payBtn.disabled = on;
+    payBtn.classList.toggle("is-busy", on);
+  }
+
+  function createOrder() {
+    if (state.order && state.order.qty === state.qty) return Promise.resolve(state.order);
+    return post("create_order", {
+      product_id: CONFIG.productId,
+      qty: state.qty,
+      customer: state.customer
+    }).then(function (data) {
+      state.order = {
+        simulate: data.simulate === true,
+        orderRef: data.order_ref,
+        razorpayOrderId: data.razorpay_order_id,
+        amount: data.amount,          // paise, from the server
+        currency: data.currency || "INR",
+        keyId: data.key_id,
+        qty: state.qty
+      };
+      return state.order;
+    });
+  }
+
+  function openCheckout(order) {
+    // No Razorpay keys configured yet: fake the payment so the rest of
+    // the flow can be checked. Remove nothing — this switches itself off
+    // as soon as the keys are set in Apps Script.
+    if (order.simulate) {
+      simulatePayment(order);
+      return;
+    }
+
+    if (typeof window.Razorpay !== "function") {
+      if (payFallback) payFallback.hidden = false;
+      throw new Error("The payment window couldn't load.");
+    }
+
+    var rzp = new window.Razorpay({
+      key: order.keyId,
+      order_id: order.razorpayOrderId,
+      amount: order.amount,
+      currency: order.currency,
+      name: "Kaha Mind",
+      description: CONFIG.productName + " \u00D7 " + state.qty,
+      prefill: {
+        name: state.customer.name,
+        email: state.customer.email,
+        contact: "+91" + state.customer.phone
+      },
+      notes: { order_ref: order.orderRef },
+      theme: { color: CONFIG.themeColor },
+      modal: {
+        ondismiss: function () {
+          setPaying(false);
+          showError(paymentError, "Payment window closed. Your order isn't placed yet \u2014 pay when you're ready.");
+        }
+      },
+      handler: function (response) {
+        verify(response, order);
+      }
+    });
+
+    rzp.on("payment.failed", function (resp) {
+      setPaying(false);
+      var d = (resp && resp.error) || {};
+      showError(paymentError, (d.description || "The payment didn't go through.") + " Nothing has been charged \u2014 you can try again.");
+    });
+
+    rzp.open();
+  }
+
+  function simulatePayment(order) {
+    var proceed = window.confirm(
+      "Simulation mode: no payment gateway is connected yet, so no money moves.\n\n" +
+      "Continue to see the confirmation screen and write the order to the sheet?"
+    );
+    if (!proceed) {
+      setPaying(false);
+      showError(paymentError, "Simulated payment cancelled.");
+      return;
+    }
+    verify({
+      razorpay_order_id: "",
+      razorpay_payment_id: "sim_" + Date.now(),
+      razorpay_signature: ""
+    }, order);
+  }
+
+  function verify(response, order) {
+    showError(paymentError, null);
+    post("verify_payment", {
+      order_ref: order.orderRef,
+      razorpay_order_id: response.razorpay_order_id,
+      razorpay_payment_id: response.razorpay_payment_id,
+      razorpay_signature: response.razorpay_signature
+    }).then(function (data) {
+      setPaying(false);
+      showDone(data);
+    }).catch(function (err) {
+      setPaying(false);
+      // The money may well have left their account, so never say "failed" here.
+      showDone({
+        order_ref: order.orderRef,
+        payment_id: response.razorpay_payment_id,
+        warning: "We couldn't confirm the order automatically (" + err.message +
+                 "). Your payment is safe \u2014 email hello@kahamind.com with the payment ID above and we'll sort it out."
+      });
+    });
+  }
+
+  if (payBtn) {
+    payBtn.addEventListener("click", function () {
+      if (state.paying) return;
+      if (!state.customer) { goTo("delivery"); return; }
+      showError(paymentError, null);
+      setPaying(true);
+      createOrder()
+        .then(openCheckout)
+        .catch(function (err) {
+          setPaying(false);
+          showError(paymentError, err.message);
+        });
+    });
+  }
+
+  /* -------------------------------------------------- confirmation */
+
+  function showDone(data) {
+    var name = state.customer ? state.customer.name.split(" ")[0] : "friend";
+    if ($("doneName")) $("doneName").textContent = name;
+    if ($("doneEmail") && state.customer) $("doneEmail").textContent = state.customer.email;
+
+    var ref = data.order_ref || (state.order && state.order.orderRef);
+    if (ref && $("doneOrderId")) {
+      $("doneOrderId").textContent = ref;
+      $("doneOrderLine").hidden = false;
+    }
+
+    if ($("doneSummaryLine")) {
+      $("doneQty").textContent = CONFIG.productName + " \u00D7 " + state.qty;
+      $("doneTotal").textContent = inr(total());
+      $("doneSummaryLine").hidden = false;
+    }
+
+    var warn = $("doneWarning");
+    if (data.simulate) {
+      showError(warn, "Simulated order \u2014 no payment was taken. The row is in your sheet.");
+      goTo("done");
+      return;
+    }
+    if (data.warning) {
+      showError(warn, data.warning);
+    } else {
+      showError(warn, null);
+    }
+
+    goTo("done");
+  }
+
+  /* ------------------------------------------------------------ go */
+  setQty(1);
+})();
+  </script>
+</body>
+</html>
