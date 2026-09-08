@@ -1,0 +1,3290 @@
+/* ============================================================
+   Kaha Mind , sitewide styles
+
+   Type
+     pd-kakabus  , the Kaha wordmark (the logo) only
+     EB Garamond , everything else, headings included
+
+   Contents
+     1. Tokens (type scale + spacing scale)
+     2. Base
+     3. Scroll reveal
+     4. Header + dropdown nav
+     5. Home , hero, plane field, red intro band
+     6. Shared pill button
+     7. Services page
+     8. Footer
+     9. Responsive (scale overrides)
+   ============================================================ */
+
+@font-face {
+  font-family: "Alte Haas Grotesk";
+  src: url("fonts/AlteHaasGrotesk-Regular.ttf") format("truetype"),
+       url("AlteHaasGrotesk-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "EB Garamond Local";
+  src: url("fonts/EBGaramond-Regular.ttf") format("truetype"),
+       url("EBGaramond-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ------------------------------------------------------------
+   1. Tokens
+   Every size on the site comes from this scale. Change it here
+   and the whole site moves together.
+   ------------------------------------------------------------ */
+
+:root {
+  /* colour */
+  --ink: #000000;
+  --paper: #ffffff;
+  --deep-teal: #14313f;
+  --signal-red: #cf2318;
+
+  /* families */
+  --script: "pd-kakabus", cursive;
+  --body: "EB Garamond", "EB Garamond Local", Georgia, "Times New Roman", serif;
+
+  /* the footer and the loading counter are set in the grotesk */
+  --sans: "Alte Haas Grotesk", "Helvetica Neue", Arial, sans-serif;
+
+  /* type scale */
+  --fs-display: 62px;   /* the main page heading                */
+  --fs-h1: 96px;         /* the Kaha wordmark                    */
+  --fs-h2: 42px;         /* section headings                     */
+  --fs-h3: 27px;         /* sub headings                         */
+  --fs-lead: 21px;       /* matches body                         */
+  --fs-body: 21px;       /* ALL running text, everywhere         */
+  --fs-small: 17px;      /* eyebrows, captions, pills only       */
+  --fs-nav: 21px;        /* footer links, pills, tabs            */
+
+  /* the header navigation keeps its own size: raising the body
+     text should not push these links around */
+  --fs-topnav: 18px;
+
+  /* line heights */
+  --lh-tight: 1.05;
+  --lh-heading: 1.15;
+  --lh-body: 1.55;
+
+  /* spacing scale */
+  --space-xs: 10px;
+  --space-sm: 18px;
+  --space-md: 28px;
+  --space-lg: 48px;
+  --space-xl: 80px;
+  --space-2xl: 128px;
+
+  /* horizontal rhythm of the page */
+  --edge-left: 5.2%;
+  --edge-right: 9.3%;
+
+  /* comfortable measure for running text */
+  --measure: 36em;
+
+  /* paper grain reused across the coloured bands */
+  --grain: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/></filter><rect width='160' height='160' filter='url(%23n)' opacity='0.5'/></svg>");
+}
+
+/* ------------------------------------------------------------
+   2. Base
+   ------------------------------------------------------------ */
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+img { display: block; max-width: 100%; }
+
+a { color: inherit; text-decoration: none; }
+
+:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+/* every heading is EB Garamond unless it opts into the
+   script face , only the wordmark and the page title do */
+h1, h2, h3 {
+  font-family: var(--body);
+  font-weight: 400;
+  line-height: var(--lh-heading);
+}
+
+p { margin: 0 0 var(--space-md); }
+p:last-child { margin-bottom: 0; }
+
+/* ------------------------------------------------------------
+   3. Scroll reveal
+   ------------------------------------------------------------ */
+
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(28px);
+  will-change: opacity, transform;
+  transition:
+    opacity 0.9s cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 0.9s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.js [data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ------------------------------------------------------------
+   4. Header + dropdown nav
+   ------------------------------------------------------------ */
+
+.site-header {
+  position: relative;
+  z-index: 20;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 30px 58px 0 44px;
+}
+
+.logo-mark {
+  font-family: var(--script);
+  font-size: 46px;
+  line-height: 1;
+  letter-spacing: 0.01em;
+}
+
+.nav-cluster {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.menu-toggle {
+  width: 34px;
+  padding: 10px 0;
+  margin-top: 6px;
+  min-height: 44px;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.menu-toggle span {
+  display: block;
+  height: 2.5px;
+  background: var(--ink);
+  border-radius: 2px;
+  transition: transform 0.28s ease, opacity 0.18s ease;
+}
+
+/* three bars fold into a cross while the menu is open */
+.nav-cluster.is-open .menu-toggle span:nth-child(1) {
+  transform: translateY(9.5px) rotate(45deg);
+}
+.nav-cluster.is-open .menu-toggle span:nth-child(2) {
+  opacity: 0;
+}
+.nav-cluster.is-open .menu-toggle span:nth-child(3) {
+  transform: translateY(-9.5px) rotate(-45deg);
+}
+
+/* the dropdown itself , frosted glass rather than a solid card */
+.site-nav {
+  position: absolute;
+  top: calc(100% + 18px);
+  right: 0;
+  min-width: 244px;
+  max-width: calc(100vw - 32px);
+  padding: var(--space-md) 34px;
+
+  background: rgba(255, 255, 255, 0.42);
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  border-radius: 28px;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.10);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  backdrop-filter: blur(18px) saturate(150%);
+
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px) scale(0.96);
+  transform-origin: top right;
+  transition:
+    opacity 0.24s ease,
+    transform 0.28s cubic-bezier(0.22, 0.61, 0.36, 1),
+    visibility 0s linear 0.28s;
+}
+
+/* browsers without backdrop-filter get a little more opacity
+   so the links stay readable over whatever sits behind */
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .site-nav { background: rgba(255, 255, 255, 0.82); }
+}
+
+.nav-cluster.is-open .site-nav {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+  transition-delay: 0s;
+}
+
+.site-nav ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.site-nav li {
+  font-size: var(--fs-topnav);
+  line-height: 1.9;
+}
+
+.site-nav a {
+  display: block;
+  transition: opacity 0.18s ease;
+}
+
+.site-nav a:hover,
+.site-nav a:focus-visible { opacity: 0.55; }
+
+/* the page you're already on */
+.site-nav a[aria-current="page"] {
+  position: relative;
+  display: inline-block;
+}
+.site-nav a[aria-current="page"]::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 6px;
+  height: 1.5px;
+  background: currentColor;
+}
+
+/* ------------------------------------------------------------
+   5. Home , hero, plane field, red intro band
+   ------------------------------------------------------------ */
+
+.hero {
+  margin-top: -6px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* paper planes drift inside this layer and never spill out of it.
+   sits above the wordmark and the crowd, so nothing hides them. */
+.plane-field {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.plane {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: auto;
+  transform-origin: 50% 50%;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+
+  /* the flock fades in with everything else on the page */
+  opacity: 0;
+  transition: opacity 0.9s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.plane-field.is-visible .plane { opacity: 1; }
+
+/* the wordmark keeps the script face , it's the logo, not a heading */
+.wordmark {
+  position: relative;
+  z-index: 2;
+  margin: 0;
+  text-align: center;
+  font-family: var(--script);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.wordmark-kaha {
+  font-size: var(--fs-h1);
+  line-height: 1;
+}
+
+.wordmark-mind {
+  font-size: calc(var(--fs-h1) * 0.53);
+  line-height: 1;
+  margin-top: 4px;
+}
+
+.hero-crowd {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: auto;
+  margin-top: 6px;
+  margin-bottom: -1px;   /* sits flush on the red band below */
+}
+
+/* ------------------------------------------------------------
+   6. Shared pill button
+   ------------------------------------------------------------ */
+
+.pill {
+  display: inline-block;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  padding: 6px 20px 7px;
+  font-size: var(--fs-small);
+  line-height: 1.2;
+  white-space: nowrap;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.pill-lg {
+  font-size: var(--fs-nav);
+  padding: 10px 30px 12px;
+}
+
+/* on white */
+.pill:hover,
+.pill:focus-visible {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* on red */
+.intro .pill:hover,
+.intro .pill:focus-visible,
+/* ------------------------------------------------------------
+   7. Services page
+   ------------------------------------------------------------ */
+
+/* Space under the header, so an illustration can sit between the
+   navigation and the page title. */
+.page-hero {
+  padding: var(--space-2xl) var(--edge-right) var(--space-2xl) var(--edge-left);
+  text-align: center;
+}
+
+/* the contact page runs tighter below the title */
+.contact-page .page-hero { padding-bottom: var(--space-lg); }
+
+/* the issue rail follows straight on from the description */
+.dossier-page .page-hero { padding-bottom: var(--space-lg); }
+
+/* these two pages carry no illustration above the title, so they sit
+   higher under the navigation */
+.dossier-page .page-hero,
+.shop-page .page-hero { padding-top: var(--space-xl); }
+
+/* ------------------------------------------------------------
+   The illustration above a page title.
+
+   >>> TO RESIZE IT, CHANGE THE ONE VALUE BELOW. <<<
+   It is the width of the artwork; the height follows.
+   ------------------------------------------------------------ */
+.page-art {
+  --page-art-size: 210px;
+
+  /* >>> the gap between the artwork and the title below it <<< */
+  --page-art-gap: var(--space-xl);
+
+  display: block;
+  width: var(--page-art-size);
+  height: auto;
+  margin: 0 auto var(--page-art-gap);
+
+  /* turns on the spot, the same way a collage piece does while held */
+  transform-origin: 50% 50%;
+  animation: page-art-spin 7s linear infinite;
+}
+
+/* the reveal animates transform too, so exempt this one: it only
+   needs to fade, or the spin is overwritten */
+.js .page-art[data-reveal] { transform: none; }
+
+@keyframes page-art-spin {
+  from { transform: perspective(700px) rotateY(0deg); }
+  to   { transform: perspective(700px) rotateY(360deg); }
+}
+
+/* the cat reads larger than the other pieces at a shared width,
+   so the shop gets its own size. >>> EDIT THIS ONE <<< */
+.shop-page .page-art { --page-art-size: 150px; }
+
+@media (max-width: 1024px) {
+  .shop-page .page-art { --page-art-size: 120px; }
+}
+
+@media (max-width: 640px) {
+  .shop-page .page-art { --page-art-size: 100px; }
+}
+
+.page-title {
+  margin: 0;
+  font-family: var(--script-logo);   /* Borel */
+  font-size: var(--fs-display);
+  line-height: 1.25;                 /* Borel has tall ascenders and
+                                        descenders, so it needs more
+                                        room than a grotesk */
+}
+
+.page-lede {
+  max-width: 34em;
+  margin: var(--space-md) auto 0;
+  font-size: var(--fs-lead);
+  line-height: 1.5;
+}
+
+/* a titled block of running copy: heading left, text right */
+.service-block {
+  display: grid;
+  grid-template-columns: 380fr 800fr;
+  gap: 64px;
+  padding: 0 var(--edge-right) var(--space-2xl) var(--edge-left);
+}
+
+.service-head {
+  position: sticky;
+  top: var(--space-lg);
+  align-self: start;
+}
+
+/* anything following the red band gets a clear run of white space
+   before it starts, so the band reads as a break in the page */
+.service-head h2 {
+  margin: 0;
+  font-size: var(--fs-h2);
+}
+
+.service-body p {
+  max-width: var(--measure);
+}
+
+.service-body .lead {
+  font-size: var(--fs-lead);
+  line-height: 1.32;
+  margin-bottom: var(--space-md);
+}
+
+.band-inner { position: relative; }
+
+.band-title {
+  margin: 0 0 var(--space-lg);
+  font-size: var(--fs-h2);
+}
+
+.offer-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-xl) 64px;
+  align-items: start;
+}
+
+.offer h3 {
+  margin: 0 0 var(--space-sm);
+  font-size: var(--fs-h3);
+}
+
+.offer p { max-width: var(--measure); }
+
+.edge-section-body p,
+.edge-section-body .edge-list { max-width: 60em; }
+
+/* the aside sits under both cards, boxed like an oversized pill */
+.offer-note {
+  grid-column: 1 / -1;
+  border: 1px solid rgba(0, 0, 0, 0.45);
+  border-radius: 28px;
+  padding: var(--space-md) 36px;
+}
+
+.offer-note p {
+  font-size: var(--fs-small);
+  line-height: 1.6;
+  max-width: 52em;
+}
+
+.band-actions {
+  display: flex;
+  gap: var(--space-xs);
+  margin-top: var(--space-xl);
+}
+
+/* closing call to action */
+.page-cta {
+  padding: 0 var(--edge-right) var(--space-2xl) var(--edge-left);
+  text-align: center;
+}
+
+.cta-line {
+  margin: 0 auto var(--space-lg);
+  max-width: 16em;
+  font-size: var(--fs-h2);
+  line-height: var(--lh-heading);
+}
+
+.cta-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+
+/* ---------- services: the offer block, no longer a red band ---------- */
+
+.offer-section {
+  position: relative;
+  padding: 0 var(--edge-right) var(--space-2xl) var(--edge-left);
+}
+
+/* the For Individuals block sits directly above it, so it needs
+   less room underneath than a block followed by a new section */
+.service-block.tight-bottom {
+  padding-bottom: var(--space-lg);
+}
+
+.offer-section .band-title { margin-bottom: var(--space-lg); }
+
+.offer-section .offer-note {
+  border-color: rgba(0, 0, 0, 0.45);
+}
+
+/* the P.S. box: text on the left, book button on the right */
+.offer-section .offer-note {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-lg);
+}
+
+.offer-section .offer-note p { flex: 1 1 auto; }
+
+.note-actions {
+  display: flex;
+  flex: 0 0 auto;
+}
+
+.offer-section .pill:hover,
+.offer-section .pill:focus-visible {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* ------------------------------------------------------------
+   7b. Edge and Workshops
+   Long pages, so the copy is set for reading: a comfortable
+   measure, clear steps between sections, and headings that
+   stay with their content.
+   ------------------------------------------------------------ */
+
+/* cohort switcher */
+.tab-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-top: var(--space-lg);
+}
+
+.tab {
+  font-family: var(--body);
+  font-size: var(--fs-nav);
+  line-height: 1.2;
+  color: inherit;
+  background: transparent;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  padding: 10px 30px 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.tab:hover { background: rgba(0, 0, 0, 0.06); }
+
+.tab.is-active {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.edge-panel { display: block; }
+.edge-panel[hidden] { display: none; }
+
+/* the opening paragraphs */
+/* the intro runs the full width of the page, like the sections
+   below it, rather than sitting in a narrow centred column */
+.edge-intro {
+  max-width: 1500px;
+  margin: 0 auto var(--space-xl);
+  padding: 0 var(--edge-right) var(--space-lg) var(--edge-left);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+/* the opening paragraph is the widest thing on the page: set a
+   size up, and allowed to run the whole measure */
+.edge-intro > p:first-of-type {
+  max-width: none;
+  margin: 0 0 var(--space-lg);
+  font-size: var(--fs-lead);
+  line-height: 1.45;
+}
+
+/* the rest of the intro runs the full width too, so the Advanced
+   and Undergraduate panels read as one wide opening rather than a
+   wide first line above a narrow column */
+.edge-intro > p:not(:first-of-type),
+.edge-intro > ul {
+  max-width: none;
+  line-height: 1.6;
+}
+
+.edge-intro .lead {
+  font-size: var(--fs-lead);
+  line-height: 1.45;
+}
+
+.intro-centred {
+  border-bottom: 0;
+}
+
+.intro-centred > p {
+  text-align: center;
+  max-width: 40em;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: var(--fs-lead);
+  line-height: 1.5;
+}
+
+/* a section: heading on the left, content on the right */
+.edge-section {
+  display: grid;
+  grid-template-columns: 300fr 900fr;
+  gap: var(--space-xl);
+  padding: var(--space-lg) var(--edge-right) var(--space-xl) var(--edge-left);
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+  max-width: 1500px;
+  margin: 0 auto;
+}
+
+.edge-section:first-of-type { border-top: 0; }
+
+.edge-section > h2 {
+  margin: 0;
+  font-size: var(--fs-h2);
+  align-self: start;
+  position: sticky;
+  top: var(--space-lg);
+}
+
+/* a readable line length, rather than the full column width */
+.edge-section-body { max-width: 44em; }
+
+.edge-section-body p { line-height: 1.6; }
+
+.edge-section-body h3 {
+  margin: var(--space-lg) 0 var(--space-sm);
+  font-size: var(--fs-h3);
+}
+
+.edge-section-body > h3:first-child { margin-top: 0; }
+
+.edge-section-body a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: opacity 0.2s ease;
+}
+.edge-section-body a:hover { opacity: 0.6; }
+
+/* lists: roomier, and the label on each item stands out */
+.edge-list {
+  margin: 0 0 var(--space-md);
+  padding-left: 1.3em;
+}
+
+.edge-list li {
+  margin-bottom: var(--space-sm);
+  line-height: 1.55;
+  padding-left: 0.2em;
+}
+
+.edge-list li:last-child { margin-bottom: 0; }
+
+.edge-list li::marker { opacity: 0.5; }
+
+.edge-list strong,
+.edge-section-body p strong {
+  font-weight: 400;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* modules within a workshop */
+.module {
+  margin-bottom: var(--space-lg);
+  padding-left: var(--space-md);
+  border-left: 1px solid rgba(0, 0, 0, 0.18);
+}
+
+.module:last-child { margin-bottom: 0; }
+
+.module h3 {
+  margin: 0 0 var(--space-xs);
+  font-size: var(--fs-h3);
+}
+
+.price-line {
+  font-size: var(--fs-lead);
+  line-height: 1.45;
+}
+.price-line strong { font-weight: 400; text-decoration: none; }
+
+.edge-actions {
+  display: flex;
+  gap: var(--space-xs);
+  margin-top: var(--space-md);
+}
+
+/* the apply button, sitting under each cohort's opening copy */
+.edge-intro-actions {
+  margin-top: var(--space-lg);
+}
+
+/* FAQs on the red band */
+.edge-faq {
+  margin-top: var(--space-lg);
+  padding: var(--space-lg) var(--edge-right) var(--space-2xl) var(--edge-left);
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+  max-width: 1500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.faq-lede {
+  font-size: var(--fs-lead);
+  line-height: 1.45;
+  margin-bottom: var(--space-lg);
+  max-width: 44em;
+}
+
+.faq-item {
+  max-width: 44em;
+  padding: var(--space-md) 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.18);
+}
+
+.faq-item:last-of-type { border-bottom: 1px solid rgba(0, 0, 0, 0.18); }
+
+.faq-item p { line-height: 1.6; }
+
+.faq-q {
+  font-size: var(--fs-h3);
+  line-height: var(--lh-heading);
+  margin-bottom: var(--space-sm);
+}
+
+.faq-outro {
+  margin-top: var(--space-lg);
+  max-width: 44em;
+}
+
+.edge-faq a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: opacity 0.2s ease;
+}
+.edge-faq a:hover { opacity: 0.75; }
+
+/* ------------------------------------------------------------
+   7c. Contact page
+   ------------------------------------------------------------ */
+
+.contact-direct {
+  padding: 0 var(--edge-right) var(--space-lg) var(--edge-left);
+  color: var(--ink);
+  text-align: center;
+}
+
+.contact-line {
+  font-size: var(--fs-lead);
+  line-height: 1.35;
+  margin: 0 auto var(--space-xs);
+  max-width: 24em;
+}
+
+.contact-line a {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  transition: opacity 0.2s ease;
+}
+.contact-line a:hover { opacity: 0.75; }
+
+.or-text {
+  font-size: var(--fs-h3);
+  letter-spacing: 0.2em;
+  margin: var(--space-md) 0;
+}
+
+.contact-line-sub { font-size: var(--fs-body); }
+
+.contact-form-section {
+  width: min(760px, 88vw);   /* the same field width as the checkout */
+  margin: 0 auto;
+  padding: var(--space-lg) 0 calc(var(--space-2xl) + var(--space-xl));
+}
+
+.form-message {
+  border: 1px solid currentColor;
+  border-radius: 22px;
+  padding: var(--space-sm) var(--space-md);
+  margin-bottom: var(--space-lg);
+  font-size: var(--fs-body);
+  text-align: center;
+}
+
+.form-message.is-success { color: var(--deep-teal); }
+.form-message.is-error { color: var(--signal-red); }
+.form-message[hidden] { display: none; }
+
+/* the honeypot must stay in the DOM but never be seen */
+.botcheck {
+  position: absolute;
+  left: -9999px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.form-group { display: flex; flex-direction: column; }
+
+.form-group label {
+  font-size: var(--fs-small);
+  line-height: 1.3;
+  margin-bottom: var(--space-xs);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  font-family: var(--body);
+  font-size: var(--fs-body);
+  line-height: 1.4;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--ink);
+  border-radius: 18px;
+  padding: 12px 18px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 1px var(--ink);
+}
+
+.form-group select {
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  padding-right: 44px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23000' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 18px center;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 120px;
+  border-radius: 22px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--space-lg);
+}
+
+/* rows of fields, matching the shop */
+.contact-form .form-group,
+.contact-form .form-row { margin-bottom: var(--space-md); }
+
+.submit-btn {
+  font-family: var(--body);
+  cursor: pointer;
+  background: transparent;
+}
+
+.submit-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* modules within a workshop, each its own titled beat */
+.module { margin-bottom: var(--space-lg); }
+.module:last-child { margin-bottom: 0; }
+
+.module h3 {
+  margin: 0 0 var(--space-xs);
+  font-size: var(--fs-h3);
+}
+
+/* ------------------------------------------------------------
+   7d. FAQs page
+   ------------------------------------------------------------ */
+
+/* the rules run the full width of the page, so the list itself
+   carries no side padding: each entry pads its own content instead */
+.faq-list {
+  padding: 0 0 var(--space-lg);
+}
+
+/* set like a section on the workshops page: question on the left,
+   answer on the right, a hairline between each */
+.faq-entry {
+  display: grid;
+  grid-template-columns: 300fr 900fr;
+  gap: var(--space-xl);
+  padding: var(--space-lg) var(--edge-right) var(--space-xl) var(--edge-left);
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+  max-width: 1500px;
+  margin: 0 auto;
+}
+
+.faq-entry:first-child { border-top: 0; }
+
+.faq-question {
+  margin: 0;
+  font-size: var(--fs-h2);
+  align-self: start;
+  position: sticky;
+  top: var(--space-lg);
+}
+
+.faq-answer { max-width: 44em; }
+
+.faq-answer p { line-height: 1.6; }
+
+.faq-answer a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: opacity 0.2s ease;
+}
+.faq-answer a:hover { opacity: 0.6; }
+
+/* the closing block reads as one more section */
+.faq-closing {
+  display: grid;
+  grid-template-columns: 300fr 900fr;
+  gap: var(--space-xl);
+  padding: var(--space-lg) var(--edge-right) var(--space-2xl) var(--edge-left);
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+  max-width: 1500px;
+  margin: 0 auto;
+}
+
+.faq-closing .band-title {
+  margin: 0;
+  font-size: var(--fs-h2);
+  align-self: start;
+}
+
+.faq-closing-line {
+  max-width: 44em;
+  margin: 0 0 var(--space-lg);
+  line-height: 1.6;
+}
+
+.faq-closing-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+/* ------------------------------------------------------------
+   7e. Kaha et al., a scrolling rail of issues
+   ------------------------------------------------------------ */
+
+.issue-rail-section {
+  padding: 0 0 var(--space-xl);
+  border-top: 1px solid rgba(0, 0, 0, 0.16);   /* divides the rail
+                                                  from the description */
+  margin-top: var(--space-md);
+}
+
+/* three across, centred, the rest reached by scrolling sideways */
+.issue-rail {
+  /* >>> the width of one cover <<< */
+  --rail-card: clamp(220px, 23vw, 330px);
+  --rail-gap: var(--space-2xl);
+
+  /* the rail is exactly three covers wide and centred, so a fourth
+     is clipped out of sight until it is scrolled into the row */
+  width: calc((3 * var(--rail-card)) + (2 * var(--rail-gap)));
+  max-width: 92vw;
+  margin: 0 auto;
+
+  display: flex;
+  gap: var(--rail-gap);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: var(--space-lg) 0 var(--space-md);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  overscroll-behavior-x: contain;
+}
+
+.issue-rail::-webkit-scrollbar { display: none; }
+
+.issue-card {
+  flex: 0 0 var(--rail-card);
+  scroll-snap-align: start;
+  display: block;
+  transition: transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1),
+              opacity 0.45s ease;
+}
+
+.issue-card img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  display: block;
+  border-radius: 0;           /* square corners */
+  background: var(--paper);   /* the covers are transparent PNGs */
+  transition: box-shadow 0.35s ease;
+}
+
+.issue-card:hover,
+.issue-card:focus-visible { transform: translateY(-6px); }
+
+.issue-card:hover img,
+.issue-card:focus-visible img {
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+}
+
+/* an issue disappears completely once it is scrolled past */
+.issue-card.is-past {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.issue-label {
+  display: block;
+  margin-top: var(--space-sm);
+  font-size: var(--fs-small);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.issue-blurb {
+  display: block;
+  margin-top: var(--space-xs);
+  font-size: var(--fs-body);
+  line-height: 1.45;
+  color: rgba(0, 0, 0, 0.55);   /* the descriptions sit back in grey */
+  max-width: 34em;
+}
+
+.rail-hint {
+  margin: var(--space-sm) var(--edge-right) 0 var(--edge-left);
+  font-size: var(--fs-small);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.4);
+  text-align: center;
+}
+
+/* ------------------------------------------------------------
+   7f. Shop
+   ------------------------------------------------------------ */
+
+.shop-step {
+  padding: 0 var(--edge-right) var(--space-2xl) var(--edge-left);
+}
+
+.shop-step[hidden] { display: none; }
+
+/* product ------------------------------------------------- */
+
+.product {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-xl);
+  align-items: start;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.product-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 28px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.product-image-fallback {
+  aspect-ratio: 1 / 1;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border: 1px solid var(--ink);
+  border-radius: 28px;
+  font-size: var(--fs-h2);
+  line-height: 1.1;
+}
+
+.product-eyebrow {
+  margin-bottom: var(--space-sm);
+  font-size: var(--fs-small);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
+.product-title {
+  margin: 0 0 var(--space-xs);
+  font-size: var(--fs-h2);
+}
+
+.product-price {
+  margin: 0 0 var(--space-md);
+  font-size: var(--fs-lead);
+}
+
+.product-blurb {
+  max-width: 30em;
+  margin-bottom: var(--space-lg);
+}
+
+/* checkout ------------------------------------------------ */
+
+.checkout-grid {
+  display: block;      /* the summary panel is gone, so one column */
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.step-eyebrow {
+  margin-bottom: var(--space-xs);
+  font-size: var(--fs-small);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
+.step-title {
+  margin: 0 0 var(--space-md);
+  font-size: var(--fs-h2);
+}
+
+.step-intro {
+  max-width: var(--measure);
+  margin-bottom: var(--space-lg);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-md) var(--space-lg);
+}
+
+.form-row-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+.contact-form .form-group,
+.contact-form .form-row { margin-bottom: var(--space-md); }
+
+.form-error {
+  border: 1px solid var(--signal-red);
+  border-radius: 22px;
+  padding: var(--space-sm) var(--space-md);
+  margin-bottom: var(--space-md);
+  color: var(--signal-red);
+  font-size: var(--fs-small);
+}
+
+.form-error[hidden] { display: none; }
+
+.step-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-top: var(--space-lg);
+}
+
+.text-btn {
+  font-family: var(--body);
+  font-size: var(--fs-small);
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 6px 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: opacity 0.2s ease;
+}
+
+.text-btn:hover { opacity: 0.6; }
+
+/* order summary ------------------------------------------- */
+
+.order-summary {
+  border: 1px solid var(--ink);
+  border-radius: 28px;
+  padding: var(--space-md) var(--space-md) var(--space-lg);
+  position: sticky;
+  top: var(--space-lg);
+}
+
+.order-summary h3 {
+  margin: 0 0 var(--space-md);
+  font-size: var(--fs-h3);
+}
+
+.summary-line {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  font-size: var(--fs-small);
+  margin-bottom: var(--space-xs);
+}
+
+.summary-total {
+  margin-top: var(--space-sm);
+  padding-top: var(--space-sm);
+  border-top: 1px solid rgba(0, 0, 0, 0.18);
+  font-size: var(--fs-body);
+}
+
+.summary-note {
+  margin-top: var(--space-md);
+  font-size: var(--fs-small);
+  opacity: 0.65;
+}
+
+.summary-address {
+  margin-top: var(--space-md);
+  padding-top: var(--space-md);
+  border-top: 1px solid rgba(0, 0, 0, 0.18);
+}
+
+.summary-address h4 {
+  margin: 0 0 var(--space-xs);
+  font-size: var(--fs-small);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
+.summary-address p { font-size: var(--fs-small); }
+
+/* payment ------------------------------------------------- */
+
+.pay-handoff {
+  border: 1px solid var(--ink);
+  border-radius: 28px;
+  padding: var(--space-md) var(--space-md) var(--space-lg);
+}
+
+.pay-handoff-lead { margin-bottom: var(--space-sm); }
+
+.pay-accepted {
+  margin: 0 0 var(--space-lg);
+  padding-left: 1.2em;
+  font-size: var(--fs-small);
+}
+
+.pay-accepted li { margin-bottom: var(--space-xs); }
+
+.pay-actions {
+  display: flex;
+  margin-top: var(--space-md);
+}
+
+.pay-fallback {
+  margin-top: var(--space-md);
+  font-size: var(--fs-small);
+  color: var(--signal-red);
+}
+
+.pay-fallback a,
+.done-text a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.secure-note {
+  margin-top: var(--space-md);
+  font-size: var(--fs-small);
+  opacity: 0.65;
+  max-width: var(--measure);
+}
+
+/* confirmation -------------------------------------------- */
+
+.order-done {
+  max-width: 34em;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.done-mark {
+  width: 68px;
+  height: 68px;
+  margin: 0 auto var(--space-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+}
+
+.done-text { margin-bottom: var(--space-md); }
+
+.done-id {
+  font-size: var(--fs-small);
+  opacity: 0.7;
+  margin-bottom: var(--space-md);
+}
+
+.done-id[hidden] { display: none; }
+
+.order-done .shop-btn { margin-top: var(--space-sm); }
+
+.submit-btn {
+  font-family: var(--body);
+  cursor: pointer;
+  background: transparent;
+}
+
+.submit-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* ------------------------------------------------------------
+   8. Footer
+   ------------------------------------------------------------ */
+
+/* the footer is set in the grotesk; the wordmark keeps Borel.
+   everything but the wordmark also sits back a shade from the
+   cream, so the logo stays the brightest thing down there. */
+.site-footer,
+.site-footer .footer-contact,
+.site-footer .footer-col h2,
+.site-footer .footer-col li,
+.site-footer .footer-col a { font-family: var(--sans); }
+
+.home-footer .footer-contact,
+.home-footer .footer-col h2,
+.home-footer .footer-col li,
+.home-footer .footer-col a { color: rgba(253, 241, 192, 0.86); }
+
+.home-footer .footer-col a:hover,
+.home-footer .footer-contact a:hover { color: var(--cream); opacity: 1; }
+
+.site-footer {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  gap: 64px;
+  padding: var(--space-xl) 55px var(--space-2xl);
+  background-color: var(--deep-teal);
+  color: var(--paper);
+  overflow: hidden;
+}
+
+.site-footer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.16;
+  background-image: var(--grain);
+}
+
+.site-footer > * { position: relative; z-index: 2; }
+
+.footer-brand { flex: 1 1 auto; min-width: 0; }
+
+/* wordmark again , script, as the logo */
+.footer-wordmark {
+  margin: 0;
+  font-family: var(--script);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.footer-kaha,
+.footer-mind {
+  font-size: var(--fs-h1);
+  line-height: 1.12;
+}
+
+.footer-contact {
+  margin: var(--space-lg) 0 0;
+  font-size: var(--fs-lead);
+  line-height: 1.35;
+}
+
+.footer-links {
+  display: flex;
+  gap: 64px;
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+
+.footer-col { min-width: 140px; }
+
+.footer-col h2 {
+  margin: 0 0 var(--space-lg);
+  font-size: var(--fs-h2);
+}
+
+.footer-col ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.footer-col li {
+  font-size: var(--fs-nav);
+  line-height: 1.8;
+}
+
+.footer-col a { transition: opacity 0.2s ease; }
+.footer-col a:hover,
+.footer-col a:focus-visible { opacity: 0.7; }
+
+/* ------------------------------------------------------------
+   9. Responsive
+   Most of the work is done by re-declaring the scale.
+   ------------------------------------------------------------ */
+
+@media (max-width: 1280px) {
+  .footer-links { gap: var(--space-lg); }
+  .service-block { grid-template-columns: 320fr 800fr; gap: var(--space-lg); }
+}
+
+@media (max-width: 1024px) {
+  :root {
+    --fs-display: 52px;
+    --fs-h1: 76px;
+    --fs-h2: 34px;
+    --fs-h3: 24px;
+    --fs-lead: 20px;
+    --fs-body: 20px;
+    --fs-small: 16px;
+    --fs-nav: 20px;
+    --fs-topnav: 18px;
+
+    --space-lg: 40px;
+    --space-xl: 60px;
+    --space-2xl: 88px;
+  }
+
+  .site-header { padding: 24px 32px 0 28px; }
+  .site-nav { min-width: 214px; padding: 22px 28px; border-radius: 24px; }
+  .logo-mark { font-size: 38px; }
+
+  .intro { padding: var(--space-xl) 6% var(--space-2xl); }
+  .intro-inner { grid-template-columns: 1fr 1fr; gap: var(--space-lg); }
+  .intro-col:last-child { grid-column: 1 / -1; }
+  .intro-actions { margin-top: var(--space-lg); }
+
+  .page-hero { padding: var(--space-xl) 6% var(--space-xl); }
+  .page-art { --page-art-size: 165px; }
+
+  .service-block {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+    padding: 0 6% var(--space-xl);
+  }
+  .service-head { position: static; }
+
+  .edge-intro { padding: 0 6% var(--space-md); margin-bottom: var(--space-lg); }
+  .edge-section {
+    grid-template-columns: 1fr;
+    gap: var(--space-sm);
+    padding: var(--space-md) 6% var(--space-lg);
+  }
+  .edge-section > h2 { position: static; }
+  .edge-section-body { max-width: none; }
+  .edge-faq { margin-bottom: 0; }
+
+  .contact-form-section { width: 88vw; padding: var(--space-xl) 0; }
+
+  .faq-list { padding: 0 6% var(--space-xl); }
+
+  .shop-step { padding: 0 6% var(--space-xl); }
+  .product { grid-template-columns: 1fr; gap: var(--space-lg); }
+  .checkout-grid { grid-template-columns: 1fr; gap: var(--space-lg); }
+  .order-summary { position: static; }
+  .issue-rail-section { padding: 0 0 var(--space-xl); }
+  .issue-rail {
+    --rail-card: clamp(200px, 38vw, 300px);
+    --rail-gap: var(--space-xl);
+    width: calc((2 * var(--rail-card)) + var(--rail-gap));
+  }
+  .faq-entry,
+  .faq-closing {
+    grid-template-columns: 1fr;
+    gap: var(--space-sm);
+    padding: var(--space-md) 6% var(--space-lg);
+  }
+  .faq-question { position: static; }
+  .faq-answer { max-width: none; }
+  .service-body p { max-width: none; }
+
+  .offer-grid { gap: var(--space-lg); }
+  .offer-section .offer-note { flex-direction: column; align-items: flex-start; gap: var(--space-md); }
+
+  .page-cta { padding: 0 6% var(--space-xl); }
+
+  .site-footer {
+    flex-direction: column;
+    padding: var(--space-xl) 6% var(--space-2xl);
+  }
+  .footer-links { margin-top: var(--space-xl); margin-left: 0; gap: var(--space-xl); }
+  .footer-col { min-width: 0; }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --fs-display: 40px;
+    --fs-h1: 54px;
+    --fs-h2: 30px;
+    --fs-h3: 22px;
+    --fs-lead: 19px;
+    --fs-body: 19px;
+    --fs-small: 16px;
+    --fs-nav: 19px;
+    --fs-topnav: 17px;
+
+    --space-md: 22px;
+    --space-lg: 32px;
+    --space-xl: 48px;
+    --space-2xl: 72px;
+  }
+
+  .hero-crowd {
+    width: 160%;
+    max-width: none;
+    margin-left: -30%;
+  }
+
+  .intro { padding: var(--space-lg) 8% var(--space-2xl); }
+  .intro-inner { grid-template-columns: 1fr; }
+  .intro-actions { align-items: flex-start; margin-top: var(--space-md); }
+
+  .page-hero { padding: var(--space-lg) 8% var(--space-lg); }
+  .page-art { --page-art-size: 130px; }
+  .service-block { padding: 0 8% var(--space-xl); }
+  .edge-intro { padding: 0 8% var(--space-md); }
+  .edge-section { padding: 0 8% var(--space-lg); }
+  .tab { padding: 8px 20px 10px; }
+  .tab-row { gap: 8px; }
+  .offer-grid { grid-template-columns: 1fr; }
+  .offer-note { padding: var(--space-md) 24px; border-radius: 22px; }
+  .page-cta { padding: 0 8% var(--space-xl); }
+
+  .footer-links { flex-direction: row; gap: var(--space-lg); }
+}
+
+
+/* ------------------------------------------------------------
+   10. Mobile
+   Overrides for phones, loaded last so they win. Everything
+   above still drives the sizes; this handles touch targets,
+   wrapping and the layouts that need to stack.
+   ------------------------------------------------------------ */
+
+@media (max-width: 640px) {
+  /* header */
+  .site-header { padding: 18px 20px 0; }
+  .logo-mark { font-size: 34px; }
+  .site-nav {
+    min-width: 0;
+    width: max(200px, calc(100vw - 40px));
+    padding: 22px 26px;
+    border-radius: 22px;
+  }
+  .site-nav li { line-height: 2.1; }
+
+  /* buttons wrap instead of pushing the page sideways,
+     and stay big enough to hit with a thumb */
+  .pill {
+    white-space: normal;
+    padding: 9px 20px 10px;
+  }
+  .pill-lg { padding: 11px 24px 13px; }
+
+  .intro-actions,
+  .cta-actions,
+  .edge-actions,
+  .band-actions {
+    align-items: stretch;
+    width: 100%;
+  }
+  .cta-actions,
+  .intro-actions { flex-direction: column; }
+  .cta-actions .pill,
+  .intro-actions .pill { text-align: center; }
+
+  /* long addresses break rather than overflow */
+  .footer-contact,
+  .price-line,
+  .faq-outro,
+  .edge-section-body { overflow-wrap: anywhere; }
+
+  /* edge cohort tabs: full-width stack, easy to tap */
+  .tab-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    margin-top: var(--space-md);
+  }
+  .tab {
+    width: 100%;
+    padding: 12px 18px 14px;
+    font-size: var(--fs-body);
+  }
+
+  .edge-intro { margin-bottom: var(--space-lg); }
+
+  .contact-form-section { width: 84vw; padding: var(--space-lg) 0 var(--space-xl); }
+
+  .faq-list { padding: 0 0 var(--space-xl); }
+  .faq-entry { padding: var(--space-md) 8%; }
+
+  .shop-step { padding: 0 8% var(--space-xl); }
+  .form-row,
+  .form-row-3 { grid-template-columns: 1fr; }
+  .step-actions { flex-direction: column-reverse; align-items: stretch; }
+  .step-actions .shop-btn { width: 100%; text-align: center; }
+  .product-image img,
+  .product-image-fallback,
+  .order-summary,
+  .pay-handoff { border-radius: 20px; }
+  .issue-rail {
+    --rail-card: 78vw;
+    --rail-gap: var(--space-lg);
+    width: var(--rail-card);
+    max-width: 84vw;
+  }
+  .issue-card:hover { transform: none; }
+  .faq-closing-actions { flex-direction: column; align-items: stretch; }
+  .faq-closing-actions .pill { text-align: center; }
+  .form-actions { justify-content: stretch; }
+  .submit-btn { width: 100%; text-align: center; }
+  .or-text { margin: var(--space-md) 0; }
+  .contact-line { overflow-wrap: anywhere; }
+  .faq-item { padding: var(--space-sm) 0; }
+  .edge-list { padding-left: 1.15em; }
+
+  /* footer stacks its two link columns side by side but
+     without a fixed gap that squeezes on narrow screens */
+  .site-footer { padding: var(--space-lg) 8% var(--space-xl); }
+  .footer-links { gap: var(--space-md); }
+  .footer-col { flex: 1 1 0; min-width: 0; }
+}
+
+/* very small phones */
+@media (max-width: 380px) {
+  :root {
+    --fs-display: 32px;
+    --fs-h1: 44px;
+    --fs-h2: 26px;
+    --fs-h3: 20px;
+    --fs-lead: 18px;
+    --fs-body: 18px;
+    --fs-nav: 18px;
+    --fs-topnav: 16px;
+  }
+
+  .site-header { padding: 16px 16px 0; }
+  .logo-mark { font-size: 30px; }
+  .footer-links { flex-direction: column; gap: var(--space-lg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+
+  .js [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ============================================================
+   Home page (new layout)
+   Borel for the wordmark and the book button; EB Garamond for
+   everything else. The collage sits between the header and the
+   copy, and its pieces can be dragged inside that box only.
+   ============================================================ */
+
+@font-face {
+  font-family: "Borel";
+  src: url("fonts/Borel-Regular.ttf") format("truetype"),
+       url("Borel-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --script-logo: "Borel", "Comic Sans MS", cursive;
+  --ember: #dd4b13;        /* home footer */
+  --cream: #fdf1c0;        /* type on the ember footer */
+}
+
+/* ---------- header ---------- */
+
+.home-header {
+  position: relative;
+  z-index: 30;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-lg);
+  padding: 34px var(--edge-right) 0 var(--edge-left);
+}
+
+.home-logo {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--script-logo);
+  font-size: 30px;
+  line-height: 1.25;
+}
+
+.home-nav {
+  flex: 1 1 auto;
+  padding-top: 10px;
+}
+
+.home-nav ul {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px 2.6vw;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.home-nav a {
+  font-family: var(--sans);
+  font-size: var(--fs-topnav);
+  line-height: 1.2;
+  transition: opacity 0.18s ease;
+}
+
+.home-nav a:hover,
+.home-nav a:focus-visible { opacity: 0.55; }
+
+.home-nav a[aria-current="page"] {
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+
+.book-btn {
+  flex: 0 0 auto;
+  padding-top: 4px;
+  font-family: var(--script-logo);
+  font-size: 17px;
+  line-height: 1.5;
+  text-align: center;
+  transition: opacity 0.18s ease;
+}
+
+.book-btn:hover { opacity: 0.6; }
+
+/* the burger only exists on small screens */
+.home-menu-toggle { display: none; }
+
+.mobile-nav { display: none; }
+
+/* ---------- the collage ---------- */
+
+.collage {
+  position: relative;
+  width: auto;
+  margin: var(--space-sm) var(--edge-right) 0 var(--edge-left);
+  aspect-ratio: 1545 / 830;
+  padding: 0;
+  touch-action: none;   /* so a drag doesn't scroll the page */
+}
+
+/* registering the scale lets the hover pop ease in rather than
+   snap, in browsers that support it */
+@property --scale {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 1;
+}
+
+.art {
+  --rot: 0deg;
+  --scale: 1;
+
+  /* 1 while a piece faces its usual way, -1 once a spin has left it
+     facing the other way. set when the cursor is released. */
+  --face: 1;
+  position: absolute;
+  height: auto;
+  user-select: none;
+  -webkit-user-drag: none;
+  cursor: grab;
+  transform-origin: 50% 50%;
+  transform-style: preserve-3d;
+  scale: 1;
+  transition: scale 0.24s cubic-bezier(0.22, 0.61, 0.36, 1),
+              --scale 0.22s cubic-bezier(0.22, 0.61, 0.36, 1),
+              opacity 0.9s cubic-bezier(0.22, 0.61, 0.36, 1),
+              filter 0.22s ease;
+  will-change: transform;
+
+  /* drifts in place. the fade in is a transition, not part of this
+     list, so picking a piece up and dropping it never replays it. */
+  animation: art-wobble 7s ease-in-out infinite;
+
+  opacity: 0;
+}
+
+.is-loaded .art { opacity: 1; }
+
+/* grows a little under the cursor. `scale` sits outside the
+   wobble's `transform`, so the two never fight over it. */
+.art:hover {
+  scale: 1.07;
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.16));
+}
+
+/* held: spins on and on until the cursor lets go */
+.art.is-held {
+  scale: 1.1;
+  cursor: grabbing;
+  filter: drop-shadow(0 16px 26px rgba(0, 0, 0, 0.22));
+  animation: art-spin 2.4s linear infinite;
+}
+
+@keyframes art-wobble {
+  0%, 100% {
+    transform: perspective(700px) rotate(var(--rot))
+               rotateX(0deg) rotateY(0deg) scale(var(--scale)) scaleX(var(--face, 1));
+  }
+  25% {
+    transform: perspective(700px) rotate(calc(var(--rot) + 1.4deg))
+               rotateX(-5deg) rotateY(9deg) scale(var(--scale)) scaleX(var(--face, 1));
+  }
+  50% {
+    transform: perspective(700px) rotate(var(--rot))
+               rotateX(4deg) rotateY(0deg) scale(var(--scale)) scaleX(var(--face, 1));
+  }
+  75% {
+    transform: perspective(700px) rotate(calc(var(--rot) - 1.4deg))
+               rotateX(-3deg) rotateY(-9deg) scale(var(--scale)) scaleX(var(--face, 1));
+  }
+}
+
+@keyframes art-spin {
+  from {
+    transform: perspective(700px) rotate(var(--rot))
+               rotateY(0deg) scale(var(--scale));
+  }
+  to {
+    transform: perspective(700px) rotate(var(--rot))
+               rotateY(360deg) scale(var(--scale));
+  }
+}
+
+/* stagger the wobble so no two pieces move in step */
+.art:nth-child(6n + 1) { animation-duration: 6.2s; animation-delay: -0.4s; transition-delay: 0s, 0s, 0.15s, 0s; }
+.art:nth-child(6n + 2) { animation-duration: 7.6s; animation-delay: -1.9s; transition-delay: 0s, 0s, 0.28s, 0s; }
+.art:nth-child(6n + 3) { animation-duration: 8.4s; animation-delay: -3.1s; transition-delay: 0s, 0s, 0.41s, 0s; }
+.art:nth-child(6n + 4) { animation-duration: 6.8s; animation-delay: -2.3s; transition-delay: 0s, 0s, 0.54s, 0s; }
+.art:nth-child(6n + 5) { animation-duration: 9.1s; animation-delay: -0.9s; transition-delay: 0s, 0s, 0.67s, 0s; }
+.art:nth-child(6n + 6) { animation-duration: 7.1s; animation-delay: -4.2s; transition-delay: 0s, 0s, 0.80s, 0s; }
+
+/* the spin keeps its own pace regardless of the wobble timing above */
+.art.is-held,
+.art.is-held:nth-child(n) { animation-duration: 2.4s; animation-delay: 0s; }
+
+/* nothing should be invisible if the animation never runs */
+.no-js .art { opacity: 1; animation: none; }
+
+
+/* ---------- everything fades up as the page opens ---------- */
+
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* the header waits for the loading screen to hand over, then
+   rises into place with the rest of the page */
+.home-logo,
+.home-nav,
+.book-btn {
+  opacity: 0;
+}
+
+.is-loaded .home-logo,
+.is-loaded .home-nav,
+.is-loaded .book-btn {
+  animation: page-in 0.8s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+/* if scripting is off, nothing should stay invisible */
+html:not(.js) .art { opacity: 1; }
+html:not(.js) .home-logo,
+html:not(.js) .home-nav,
+html:not(.js) .book-btn { opacity: 1; }
+
+.is-loaded .home-logo { animation-delay: 0.05s; }
+.is-loaded .home-nav  { animation-delay: 0.18s; }
+.is-loaded .book-btn  { animation-delay: 0.30s; }
+
+
+/* the ember footer's link colour on any page that uses it */
+.home-footer .footer-col a:hover,
+.home-footer .footer-contact a:hover { opacity: 0.75; }
+
+/* ---------- intro copy ---------- */
+
+.home-intro {
+  padding: var(--space-md) var(--edge-right) var(--space-2xl) var(--edge-left);
+}
+
+.home-intro .intro-inner {
+  display: grid;
+  grid-template-columns: 340fr 470fr 380fr;
+  gap: var(--space-lg) 64px;
+}
+
+.home-intro .intro-col p { font-size: var(--fs-body); }
+
+/* ---------- footer ---------- */
+
+.home-footer {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--ember);
+  color: var(--cream);
+  align-items: flex-start;
+  gap: var(--space-lg);
+}
+
+/* real paper grain over the orange: the texture is greyscale and
+   blended, so it lends its fibres and creases without tinting the
+   colour underneath. covers the whole footer, edge to edge. */
+.home-footer::before {
+  background-image: url("paper-texture.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  mix-blend-mode: overlay;
+  opacity: 0.62;
+}
+
+/* a second, larger pass keeps the grain from looking tiled or flat
+   on very wide screens */
+.home-footer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url("paper-texture.jpg");
+  background-size: 140% auto;
+  background-position: center;
+  mix-blend-mode: soft-light;
+  opacity: 0.4;
+}
+
+/* the contact line sits directly under the wordmark */
+.home-footer .footer-contact {
+  margin-top: var(--space-sm);
+}
+
+/* ------------------------------------------------------------
+   art_11 in the footer.
+
+   >>> TO RESIZE IT, CHANGE THE ONE NUMBER BELOW. <<<
+   It is the width of the piece on desktop. Everything else
+   (the space it takes in the row, the mobile sizes) follows
+   from it automatically.
+   ------------------------------------------------------------ */
+
+.home-footer {
+  --footer-art-size: 540px;
+}
+
+.footer-art {
+  position: absolute;
+  z-index: 1;              /* passes behind the wordmark and the links */
+  width: var(--footer-art-size);
+  height: auto;
+  left: 50%;
+  top: 50%;
+  margin-left: calc(var(--footer-art-size) / -2);
+  margin-top: calc(var(--footer-art-size) / -3.2);
+  transform-origin: 50% 50%;
+
+  /* crosses the full width of the footer, turning at each edge,
+     and fades in with the rest of the page */
+  animation: footer-fly var(--fly-time) linear infinite;
+}
+
+/* how far it travels each way, and how long a full round trip takes.
+   raise --fly-range to send it further into the wordmark and the nav. */
+.home-footer {
+  /* edge to edge: half the viewport less half the artwork */
+  --fly-range: calc(40vw - (var(--footer-art-size) / 2) - 10px);
+  --fly-time: 52s;     /* one full round trip, there and back */
+  --fly-height: 70px;  /* how far it climbs and dives */
+  min-height: 520px;
+}
+
+@keyframes footer-fly {
+  0%     { transform: translateX(calc(var(--fly-range) * -1.0000)) translateY(calc(var(--fly-height) * 0.0000)) rotate(3.20deg) scaleX(0.060); }
+  3.125% { transform: translateX(calc(var(--fly-range) * -0.9808)) translateY(calc(var(--fly-height) * 0.3771)) rotate(2.96deg) scaleX(-0.663); }
+  6.25%  { transform: translateX(calc(var(--fly-range) * -0.9239)) translateY(calc(var(--fly-height) * 0.6661)) rotate(2.26deg) scaleX(-1.000); }
+  9.375% { transform: translateX(calc(var(--fly-range) * -0.8315)) translateY(calc(var(--fly-height) * 0.8024)) rotate(1.22deg) scaleX(-1.000); }
+  12.5%  { transform: translateX(calc(var(--fly-range) * -0.7071)) translateY(calc(var(--fly-height) * 0.7621)) rotate(0.00deg) scaleX(-1.000); }
+  15.62% { transform: translateX(calc(var(--fly-range) * -0.5556)) translateY(calc(var(--fly-height) * 0.5667)) rotate(-1.22deg) scaleX(-1.000); }
+  18.75% { transform: translateX(calc(var(--fly-range) * -0.3827)) translateY(calc(var(--fly-height) * 0.2741)) rotate(-2.26deg) scaleX(-1.000); }
+  21.88% { transform: translateX(calc(var(--fly-range) * -0.1951)) translateY(calc(var(--fly-height) * -0.0390)) rotate(-2.96deg) scaleX(-1.000); }
+  25%    { transform: translateX(calc(var(--fly-range) * -0.0000)) translateY(calc(var(--fly-height) * -0.3000)) rotate(-3.20deg) scaleX(-1.000); }
+  28.12% { transform: translateX(calc(var(--fly-range) * 0.1951)) translateY(calc(var(--fly-height) * -0.4599)) rotate(-2.96deg) scaleX(-1.000); }
+  31.25% { transform: translateX(calc(var(--fly-range) * 0.3827)) translateY(calc(var(--fly-height) * -0.5037)) rotate(-2.26deg) scaleX(-1.000); }
+  34.38% { transform: translateX(calc(var(--fly-range) * 0.5556)) translateY(calc(var(--fly-height) * -0.4496)) rotate(-1.22deg) scaleX(-1.000); }
+  37.5%  { transform: translateX(calc(var(--fly-range) * 0.7071)) translateY(calc(var(--fly-height) * -0.3379)) rotate(-0.00deg) scaleX(-1.000); }
+  40.62% { transform: translateX(calc(var(--fly-range) * 0.8315)) translateY(calc(var(--fly-height) * -0.2139)) rotate(1.22deg) scaleX(-1.000); }
+  43.75% { transform: translateX(calc(var(--fly-range) * 0.9239)) translateY(calc(var(--fly-height) * -0.1117)) rotate(2.26deg) scaleX(-1.000); }
+  46.88% { transform: translateX(calc(var(--fly-range) * 0.9808)) translateY(calc(var(--fly-height) * -0.0438)) rotate(2.96deg) scaleX(-0.663); }
+  50%    { transform: translateX(calc(var(--fly-range) * 1.0000)) translateY(calc(var(--fly-height) * -0.0000)) rotate(3.20deg) scaleX(-0.060); }
+  53.12% { transform: translateX(calc(var(--fly-range) * 0.9808)) translateY(calc(var(--fly-height) * 0.0438)) rotate(2.96deg) scaleX(0.663); }
+  56.25% { transform: translateX(calc(var(--fly-range) * 0.9239)) translateY(calc(var(--fly-height) * 0.1117)) rotate(2.26deg) scaleX(1.000); }
+  59.38% { transform: translateX(calc(var(--fly-range) * 0.8315)) translateY(calc(var(--fly-height) * 0.2139)) rotate(1.22deg) scaleX(1.000); }
+  62.5%  { transform: translateX(calc(var(--fly-range) * 0.7071)) translateY(calc(var(--fly-height) * 0.3379)) rotate(0.00deg) scaleX(1.000); }
+  65.62% { transform: translateX(calc(var(--fly-range) * 0.5556)) translateY(calc(var(--fly-height) * 0.4496)) rotate(-1.22deg) scaleX(1.000); }
+  68.75% { transform: translateX(calc(var(--fly-range) * 0.3827)) translateY(calc(var(--fly-height) * 0.5037)) rotate(-2.26deg) scaleX(1.000); }
+  71.88% { transform: translateX(calc(var(--fly-range) * 0.1951)) translateY(calc(var(--fly-height) * 0.4599)) rotate(-2.96deg) scaleX(1.000); }
+  75%    { transform: translateX(calc(var(--fly-range) * 0.0000)) translateY(calc(var(--fly-height) * 0.3000)) rotate(-3.20deg) scaleX(1.000); }
+  78.12% { transform: translateX(calc(var(--fly-range) * -0.1951)) translateY(calc(var(--fly-height) * 0.0390)) rotate(-2.96deg) scaleX(1.000); }
+  81.25% { transform: translateX(calc(var(--fly-range) * -0.3827)) translateY(calc(var(--fly-height) * -0.2741)) rotate(-2.26deg) scaleX(1.000); }
+  84.38% { transform: translateX(calc(var(--fly-range) * -0.5556)) translateY(calc(var(--fly-height) * -0.5667)) rotate(-1.22deg) scaleX(1.000); }
+  87.5%  { transform: translateX(calc(var(--fly-range) * -0.7071)) translateY(calc(var(--fly-height) * -0.7621)) rotate(-0.00deg) scaleX(1.000); }
+  90.62% { transform: translateX(calc(var(--fly-range) * -0.8315)) translateY(calc(var(--fly-height) * -0.8024)) rotate(1.22deg) scaleX(1.000); }
+  93.75% { transform: translateX(calc(var(--fly-range) * -0.9239)) translateY(calc(var(--fly-height) * -0.6661)) rotate(2.26deg) scaleX(1.000); }
+  96.88% { transform: translateX(calc(var(--fly-range) * -0.9808)) translateY(calc(var(--fly-height) * -0.3771)) rotate(2.96deg) scaleX(0.663); }
+  100%   { transform: translateX(calc(var(--fly-range) * -1.0000)) translateY(calc(var(--fly-height) * -0.0000)) rotate(3.20deg) scaleX(0.060); }
+}
+
+.home-footer .footer-wordmark {
+  font-family: var(--script-logo);
+  line-height: 1.15;
+}
+
+.home-footer .footer-wordmark span { font-size: 92px; }
+
+.home-footer .footer-col h2 { font-family: var(--sans); }
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 1100px) {
+  .home-nav ul { gap: 6px 1.8vw; }
+  .home-logo { font-size: 26px; }
+}
+
+@media (max-width: 860px) {
+  .home-header {
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 6% 0;
+  }
+
+  .home-nav,
+  .book-btn { display: none; }
+
+  .home-menu-toggle {
+    display: flex;
+    margin-top: 0;
+  }
+
+  /* dropdown for the small screens */
+  .mobile-nav {
+    display: block;
+    position: absolute;
+    z-index: 40;
+    top: 74px;
+    right: 6%;
+    min-width: 220px;
+    max-width: calc(100vw - 12%);
+    padding: 20px 26px;
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid rgba(0, 0, 0, 0.14);
+    border-radius: 24px;
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.12);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+    backdrop-filter: blur(18px) saturate(150%);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px) scale(0.96);
+    transform-origin: top right;
+    transition: opacity 0.24s ease,
+                transform 0.28s cubic-bezier(0.22, 0.61, 0.36, 1),
+                visibility 0s linear 0.28s;
+  }
+
+  .nav-open .mobile-nav {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition-delay: 0s;
+  }
+
+  .mobile-nav ul { margin: 0; padding: 0; list-style: none; }
+  .mobile-nav li { font-family: var(--sans); font-size: var(--fs-topnav); line-height: 2.1; }
+
+  .nav-open .home-menu-toggle span:nth-child(1) { transform: translateY(9.5px) rotate(45deg); }
+  .nav-open .home-menu-toggle span:nth-child(2) { opacity: 0; }
+  .nav-open .home-menu-toggle span:nth-child(3) { transform: translateY(-9.5px) rotate(-45deg); }
+
+  .collage { aspect-ratio: 1200 / 950; margin-left: 6%; margin-right: 6%; }
+
+  .home-intro { padding: var(--space-lg) 6% var(--space-xl); }
+  .home-intro .intro-inner { grid-template-columns: 1fr 1fr; gap: var(--space-lg); }
+  .home-intro .intro-col:last-child { grid-column: 1 / -1; }
+
+  .home-footer .footer-wordmark span { font-size: 66px; }
+  .home-footer { --footer-art-size: 190px; --fly-height: 42px; }
+
+}
+
+@media (max-width: 640px) {
+  .home-logo { font-size: 22px; }
+  .collage { aspect-ratio: 900 / 1000; margin-left: 6%; margin-right: 6%; }
+  .home-intro .intro-inner { grid-template-columns: 1fr; }
+  .home-footer .footer-wordmark span { font-size: 50px; }
+  .home-footer { --footer-art-size: 150px; --fly-height: 32px; }
+
+}
+
+/* ============================================================
+   Loading screen
+   Ten seconds on the footer's textured orange, one piece
+   drifting about, a small counter along the bottom.
+   ============================================================ */
+
+.loader {
+  /* >>> HOW HIGH THE COUNTER SITS ABOVE THE BOTTOM OF THE SCREEN.
+         Raise this number to lift it, lower it to drop it. <<< */
+  --counter-bottom: 22vh;
+
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background-color: var(--ember);
+  color: var(--cream);
+
+  /* leaves by sliding up and off the top of the screen */
+  transform: translateY(0);
+  transition: transform 0.7s cubic-bezier(0.7, 0, 0.3, 1);
+  will-change: transform;
+}
+
+/* the same paper grain the footer carries */
+.loader::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("paper-texture.jpg");
+  background-size: cover;
+  background-position: center;
+  mix-blend-mode: overlay;
+  opacity: 0.62;
+}
+
+.loader::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("paper-texture.jpg");
+  background-size: 140% auto;
+  background-position: center;
+  mix-blend-mode: soft-light;
+  opacity: 0.4;
+}
+
+.loader.is-done {
+  transform: translateY(-100%);
+  pointer-events: none;
+}
+
+/* the wordmark, sitting near the top of the loading screen */
+.loader-logo {
+  position: absolute;
+  top: 18vh;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: var(--script-logo);
+  font-size: 54px;
+  line-height: 1.15;
+  color: var(--cream);
+  white-space: nowrap;
+}
+
+.loader-logo span:last-child { font-size: 0.66em; }
+
+@media (max-width: 700px) {
+  .loader-logo { font-size: 38px; top: 14vh; }
+}
+
+/* >>> the size of the drifting piece <<< */
+.loader-dog {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 380px;
+  height: auto;
+  z-index: 1;
+  pointer-events: none;
+  will-change: transform;
+  transform-origin: 50% 50%;
+}
+
+/* the counter: small, white, centred, sitting the distance above
+   the bottom edge set by --counter-bottom on .loader above */
+.loader-count {
+  position: absolute;
+  left: 50%;
+  bottom: var(--counter-bottom);
+  transform: translateX(-50%);
+  z-index: 2;
+  margin: 0;
+  font-family: var(--sans);
+  font-size: var(--fs-small);
+  line-height: 1;
+  letter-spacing: 0.18em;
+  color: var(--cream);          /* same as the wordmark above it */
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* nothing scrolls while the loader is up */
+.is-loading { overflow: hidden; }
+
+@media (max-width: 700px) {
+  .loader-dog { width: 240px; }
+  .loader { --counter-bottom: 16vh; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loader-dog { display: none; }
+}
+
+/* ============================================================
+   Workshops: Rooted, Uprooted
+   The registration page, set in the site's own type and colour
+   rather than its original palette.
+   ============================================================ */
+
+.ru-hero {
+  max-width: 44em;
+  margin: 0 auto;
+  padding: var(--space-lg) var(--edge-right) var(--space-lg) var(--edge-left);
+  text-align: center;
+}
+
+/* the root drawing, in the site's red */
+.ru-title {
+  margin: 0;
+  font-size: var(--fs-h2);
+  line-height: var(--lh-heading);
+}
+
+.ru-tagline {
+  max-width: 30em;
+  margin: var(--space-md) auto 0;
+  font-size: var(--fs-lead);
+  line-height: 1.5;
+}
+
+.ru-details {
+  max-width: 44em;
+  margin: var(--space-lg) auto 0;
+  padding: 0 var(--edge-right) var(--space-lg) var(--edge-left);
+}
+
+.ru-details h2 {
+  margin: 0 0 var(--space-md);
+  font-size: var(--fs-h2);
+}
+
+/* date, time, place */
+.ru-facts {
+  display: grid;
+  grid-template-columns: 8em 1fr;
+  gap: var(--space-xs) var(--space-md);
+  margin: 0 0 var(--space-lg);
+  padding: var(--space-md) 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.14);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.14);
+}
+
+.ru-facts dt {
+  font-size: var(--fs-small);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.55;
+  align-self: center;
+}
+
+.ru-facts dd { margin: 0; }
+
+.ru-lede { margin: 0; line-height: 1.6; }
+
+.ru-form-section {
+  width: min(760px, 88vw);
+  margin: 0 auto;
+  padding: var(--space-lg) 0 calc(var(--space-2xl) + var(--space-xl));
+}
+
+.ru-form-title {
+  margin: 0 0 var(--space-md);
+  font-size: var(--fs-h3);
+}
+
+/* the dial code sits against the number */
+.ru-phone-row {
+  display: grid;
+  grid-template-columns: 8.5em 1fr;
+  gap: var(--space-sm);
+}
+
+/* the panel that appears once the form is submitted */
+.ru-payment {
+  margin-top: var(--space-lg);
+  padding: var(--space-md) var(--space-md) var(--space-lg);
+  border: 1px solid var(--ink);
+  border-radius: 28px;
+  text-align: center;
+}
+
+.ru-payment[hidden] { display: none; }
+
+.ru-payment h3 {
+  margin: 0 0 var(--space-xs);
+  font-size: var(--fs-h3);
+}
+
+.ru-payment p { margin: 0 0 var(--space-md); }
+
+.ru-currency {
+  margin: var(--space-md) 0 0 !important;
+  font-size: var(--fs-small);
+  opacity: 0.65;
+}
+
+@media (max-width: 1024px) {
+  .ru-hero,
+  .ru-details { padding-left: 6%; padding-right: 6%; }
+  .ru-form-section { width: 88vw; padding: var(--space-md) 0 var(--space-2xl); }
+}
+
+@media (max-width: 640px) {
+  .ru-hero,
+  .ru-details { padding-left: 8%; padding-right: 8%; }
+  .ru-facts { grid-template-columns: 6.5em 1fr; }
+  .ru-phone-row { grid-template-columns: 7em 1fr; }
+  .ru-form-section { width: 84vw; }
+}
+
+
+/* ============================================================
+   11. MOBILE BUILD
+   Added as a final layer. Everything here is inside a media
+   query and therefore cannot reach the desktop layout, with
+   the single exception noted in 11.0 immediately below.
+   Order: 11.0 fix / 11.1 safety / 11.2 header + nav /
+   11.3 home / 11.4 pages / 11.5 footer / 11.6 loader /
+   11.7 touch behaviour / 11.8 landscape / 11.9 small phones
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   11.0  The one rule outside a media query.
+
+   The three bars of the burger were rendering 0px wide, so the
+   menu button was invisible on every page, desktop included.
+   A <button> set to display:flex picks up align-items:center
+   from the browser's own stylesheet, which in a column flex
+   shrinks the empty <span>s to nothing on the cross axis.
+   Asking for stretch gives them the button's width back.
+
+   >>> DELETE THESE TWO LINES TO PUT IT BACK AS IT WAS. <<<
+   ------------------------------------------------------------ */
+.menu-toggle { align-items: stretch; }
+.menu-toggle span { width: 100%; }
+
+
+/* ------------------------------------------------------------
+   11.1  Safety: nothing may push the page sideways
+   ------------------------------------------------------------ */
+
+@media (max-width: 900px) {
+  /* long addresses, links and DOIs wrap instead of widening
+     the page and creating a sideways scroll */
+  .contact-line,
+  .contact-line a,
+  .footer-contact,
+  .page-lede,
+  .faq-answer,
+  .faq-answer a,
+  .edge-section-body,
+  .edge-section-body a,
+  .service-body,
+  .offer p,
+  .issue-blurb,
+  .price-line,
+  .done-text,
+  .pay-fallback { overflow-wrap: break-word; word-break: normal; }
+
+  /* only the things that genuinely have no break points get the
+     harsher rule: bare URLs, emails and phone numbers */
+  a[href^="mailto:"],
+  a[href^="tel:"],
+  a[href^="http"] { overflow-wrap: anywhere; }
+
+  /* an image can never be wider than the column holding it */
+  img { height: auto; }
+}
+
+
+/* ------------------------------------------------------------
+   11.2  Header and navigation
+   ------------------------------------------------------------ */
+
+@media (max-width: 900px) {
+  /* inner pages: wordmark left, burger right, on one line */
+  .site-header {
+    align-items: center;
+    padding: 20px 22px 0;
+  }
+
+  .menu-toggle {
+    width: 30px;
+    min-height: 44px;      /* a comfortable thumb target */
+    margin-top: 0;
+    padding: 12px 0;
+    gap: 6px;
+  }
+
+  /* if the list is ever taller than the screen it scrolls
+     inside the panel rather than running off the bottom */
+  .site-nav,
+  .mobile-nav {
+    max-height: calc(100vh - 140px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  /* every link is its own tappable row */
+  .site-nav a,
+  .mobile-nav a {
+    padding: 6px 0;
+    line-height: 1.6;
+  }
+  .site-nav li,
+  .mobile-nav li { line-height: 1.6; }
+
+  /* the current-page underline sat against the old line height */
+  .site-nav a[aria-current="page"]::after { bottom: 2px; }
+
+  /* home: the dropdown clears the two-line wordmark */
+  .mobile-nav {
+    top: 82px;
+    right: 22px;
+    left: auto;
+    min-width: 210px;
+    max-width: calc(100vw - 44px);
+    padding: 18px 24px;
+  }
+
+  .home-header { padding: 20px 22px 0; }
+}
+
+@media (max-width: 640px) {
+  .site-header { padding: 18px 20px 0; }
+  .home-header { padding: 18px 20px 0; }
+  .mobile-nav { top: 78px; right: 20px; max-width: calc(100vw - 40px); }
+  .site-nav { right: 0; width: min(260px, calc(100vw - 40px)); }
+}
+
+
+/* ------------------------------------------------------------
+   11.3  Home page
+
+   The collage is one drawn composition: every piece is placed
+   as a percentage of the box, so the box has to keep the shape
+   it was drawn in or the arrangement pulls apart. Rather than
+   restacking it, the whole thing goes edge to edge and keeps
+   its original proportions, so it reads as one illustration
+   band across the top of the phone.
+   ------------------------------------------------------------ */
+
+@media (max-width: 900px) {
+  .collage {
+    /* the shape the collage was composed in */
+    aspect-ratio: 1545 / 830;
+
+    /* full bleed: the extra width buys the pieces their size back */
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: var(--space-sm);
+  }
+
+  /* a swipe that starts on the collage should still scroll the
+     page; see 11.7 for the pieces themselves */
+  .collage { touch-action: pan-y; }
+
+  .home-intro { padding: var(--space-lg) 8% var(--space-xl); }
+  .home-intro .intro-inner { gap: var(--space-md) var(--space-lg); }
+}
+
+@media (max-width: 640px) {
+  .collage { margin-top: var(--space-xs); }
+
+  /* one column of copy, with a clear step between paragraphs */
+  .home-intro .intro-inner { grid-template-columns: 1fr; gap: var(--space-md); }
+  .home-intro .intro-col p { margin-bottom: var(--space-md); }
+  .home-intro .intro-col:last-child p:last-child { margin-bottom: 0; }
+}
+
+
+/* ------------------------------------------------------------
+   11.4  Inner pages
+   ------------------------------------------------------------ */
+
+@media (max-width: 900px) {
+  /* the spinning piece above a page title */
+  .page-art { --page-art-size: 150px; --page-art-gap: var(--space-lg); }
+  .shop-page .page-art { --page-art-size: 115px; }
+
+  .page-hero { padding: var(--space-lg) 8% var(--space-lg); }
+  .page-title { line-height: 1.2; }
+  .page-lede { max-width: none; }
+
+  /* headings stop sticking: on a short screen a sticky heading
+     eats most of the viewport */
+  .service-head,
+  .edge-section > h2,
+  .faq-question,
+  .order-summary { position: static; }
+}
+
+@media (max-width: 640px) {
+  .page-art { --page-art-size: 120px; }
+  .shop-page .page-art { --page-art-size: 95px; }
+
+  /* ---- services ---- */
+  .offer-grid { grid-template-columns: 1fr; gap: var(--space-lg); }
+  .offer-section .offer-note {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-md);
+    padding: var(--space-md) 22px;
+    border-radius: 20px;
+  }
+  .note-actions { width: 100%; }
+  .note-actions .pill { width: 100%; text-align: center; }
+  .band-actions { flex-direction: column; align-items: stretch; }
+  .band-actions .pill { text-align: center; }
+
+  /* ---- the edge and workshops ---- */
+  .edge-intro,
+  .edge-section,
+  .edge-faq { padding-left: 8%; padding-right: 8%; }
+  .edge-section > h2 { margin-bottom: var(--space-xs); }
+  .module { padding-left: var(--space-sm); }
+  .edge-actions,
+  .edge-intro-actions { flex-direction: column; align-items: stretch; }
+  .edge-actions .pill,
+  .edge-intro-actions .pill { text-align: center; }
+  .faq-lede,
+  .faq-item,
+  .faq-outro { max-width: none; }
+
+  /* ---- FAQs ---- */
+  .faq-entry,
+  .faq-closing { padding-left: 8%; padding-right: 8%; }
+  .faq-question { font-size: var(--fs-h3); }
+
+  /* ---- Kaha et al. ---- */
+  .issue-rail-section { margin-top: var(--space-sm); }
+  .issue-rail {
+    --rail-card: 80vw;
+    --rail-gap: var(--space-md);
+    width: 100%;
+    max-width: none;
+    padding-left: 8%;
+    padding-right: 8%;
+    scroll-padding-left: 8%;
+    gap: var(--rail-gap);
+  }
+  .issue-card { flex-basis: var(--rail-card); }
+  /* a card that has scrolled by fades out on desktop; on a phone
+     the rail is one card wide, so keep them all readable */
+  .issue-card.is-past { opacity: 1; pointer-events: auto; }
+  .rail-hint { margin-left: 8%; margin-right: 8%; }
+
+  /* ---- contact and forms ---- */
+  .contact-direct { padding-left: 8%; padding-right: 8%; }
+  .contact-form-section { width: min(560px, 84vw); }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 13px 16px;
+    border-radius: 16px;
+  }
+  .form-group textarea { border-radius: 18px; }
+  .form-group label { margin-bottom: 6px; }
+  .form-actions { justify-content: stretch; }
+  .submit-btn { width: 100%; }
+
+  /* ---- shop ---- */
+  .product { gap: var(--space-md); }
+  .product-blurb { max-width: none; }
+  .product-actions .shop-btn,
+  .pay-actions .shop-btn { width: 100%; text-align: center; }
+  .pay-handoff,
+  .ru-payment { padding: var(--space-md) 20px var(--space-lg); border-radius: 20px; }
+  .summary-line { font-size: var(--fs-small); }
+
+  /* ---- workshops registration ---- */
+  .ru-hero,
+  .ru-details { padding-left: 8%; padding-right: 8%; }
+  .ru-form-section { width: min(560px, 84vw); }
+
+  /* ---- closing call to action ---- */
+  .cta-line { max-width: none; }
+}
+
+
+/* ------------------------------------------------------------
+   11.5  Footer
+
+   The piece that flies across the footer is drawn behind the
+   type on desktop, where there is room either side of it. On a
+   phone the columns sit directly in its path, so it drops into
+   a clear band of its own below the links and keeps flying
+   there.
+   ------------------------------------------------------------ */
+
+@media (max-width: 900px) {
+  .site-footer { padding: var(--space-xl) 8% var(--space-xl); }
+  .footer-links { margin-top: var(--space-lg); gap: var(--space-lg); }
+  .footer-col h2 { margin-bottom: var(--space-md); }
+  .footer-col li { line-height: 1.7; }
+  .footer-col a { display: inline-block; padding: 3px 0; }
+
+  .home-footer {
+    --footer-art-size: 170px;
+    --fly-height: 34px;
+    min-height: 0;              /* the content sets the height now */
+    padding-bottom: calc(var(--footer-art-size) + var(--space-lg));
+  }
+
+  .footer-art {
+    top: auto;
+    bottom: var(--space-md);
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .site-footer { padding: var(--space-lg) 8% var(--space-lg); }
+  .footer-links { gap: var(--space-md); }
+  .footer-col { flex: 1 1 0; min-width: 0; }
+
+  .home-footer {
+    --footer-art-size: 140px;
+    --fly-height: 26px;
+    padding-bottom: calc(var(--footer-art-size) + var(--space-md));
+  }
+}
+
+
+/* ------------------------------------------------------------
+   11.6  Loading screen
+   ------------------------------------------------------------ */
+
+@media (max-width: 700px) {
+  /* the browser's own bars change the height of the viewport as
+     you scroll; dvh measures what is actually visible */
+  .loader { height: 100dvh; }
+  .loader-logo { top: 15dvh; }
+  .loader { --counter-bottom: 15dvh; }
+}
+
+@media (max-width: 420px) {
+  .loader-dog { width: 190px; }
+  .loader-logo { font-size: 32px; }
+}
+
+
+/* ------------------------------------------------------------
+   11.7  Touch behaviour
+
+   A finger has no hover, so a tapped button would otherwise
+   keep its hover colour until something else was tapped. And a
+   swipe that lands on a collage piece has to scroll the page,
+   not start a drag, or the top of the home page becomes a spot
+   where the page will not move.
+   ------------------------------------------------------------ */
+
+@media (hover: none) and (pointer: coarse) {
+  .pill:hover,
+  .tab:hover,
+  .text-btn:hover,
+  .issue-card:hover,
+  .site-nav a:hover,
+  .mobile-nav a:hover,
+  .home-nav a:hover,
+  .footer-col a:hover,
+  .footer-contact a:hover,
+  .contact-line a:hover,
+  .edge-section-body a:hover,
+  .faq-answer a:hover,
+  .book-btn:hover {
+    background: transparent;
+    color: inherit;
+    opacity: 1;
+    transform: none;
+  }
+
+  /* the active tab keeps its filled state: that is a state, not
+     a hover */
+  .tab.is-active:hover { background: var(--ink); color: var(--paper); }
+
+  .issue-card:hover img { box-shadow: none; }
+
+  /* the collage pieces still drift, but a swipe scrolls the page.
+     >>> DELETE THIS RULE TO PUT DRAGGING BACK ON PHONES. <<< */
+  .collage .art {
+    pointer-events: none;
+    cursor: default;
+  }
+  .art:hover { scale: 1; filter: none; }
+}
+
+
+/* ------------------------------------------------------------
+   11.8  Phone held sideways
+   ------------------------------------------------------------ */
+
+@media (orientation: landscape) and (max-height: 520px) {
+  .loader-logo { top: 8dvh; font-size: 30px; }
+  .loader { --counter-bottom: 9dvh; }
+  .loader-dog { width: 150px; }
+
+  .site-header,
+  .home-header { padding-top: 14px; }
+
+  .site-nav,
+  .mobile-nav { max-height: calc(100dvh - 90px); }
+
+  .collage { margin-top: 0; }
+
+  .page-hero { padding-top: var(--space-md); padding-bottom: var(--space-md); }
+}
+
+
+/* ------------------------------------------------------------
+   11.9  Small phones
+   ------------------------------------------------------------ */
+
+@media (max-width: 380px) {
+  .site-header,
+  .home-header { padding: 16px 16px 0; }
+  .mobile-nav { top: 70px; right: 16px; max-width: calc(100vw - 32px); }
+  .site-nav { width: min(240px, calc(100vw - 32px)); padding: 18px 22px; }
+
+  .page-hero { padding-left: 7%; padding-right: 7%; }
+  .page-art { --page-art-size: 104px; }
+  .shop-page .page-art { --page-art-size: 84px; }
+
+  .edge-intro,
+  .edge-section,
+  .edge-faq,
+  .faq-entry,
+  .faq-closing,
+  .service-block,
+  .offer-section,
+  .page-cta,
+  .shop-step,
+  .contact-direct,
+  .ru-hero,
+  .ru-details { padding-left: 7%; padding-right: 7%; }
+
+  .issue-rail { --rail-card: 84vw; padding-left: 7%; padding-right: 7%; scroll-padding-left: 7%; }
+  .rail-hint { margin-left: 7%; margin-right: 7%; }
+
+  .contact-form-section,
+  .ru-form-section { width: 86vw; }
+
+  .ru-facts { grid-template-columns: 5.5em 1fr; }
+  .ru-phone-row { grid-template-columns: 6.4em 1fr; }
+
+  /* the two link columns stop fitting side by side */
+  .footer-links { flex-direction: column; gap: var(--space-md); }
+  .footer-col h2 { margin-bottom: var(--space-sm); }
+
+  .home-footer { --footer-art-size: 120px; }
+}
+
+
+/* ------------------------------------------------------------
+   11.10  Reduce Motion
+
+   The header fades up on a keyframe animation, and the reduce
+   motion rule further up switches every animation off. With
+   the animation gone the header never leaves opacity 0, so
+   anyone browsing with Reduce Motion turned on (a common
+   setting on a phone) sees no wordmark, no navigation and no
+   book button on any page. They keep their still header here.
+
+   >>> DELETE THIS BLOCK TO PUT IT BACK AS IT WAS. <<<
+   ------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  .home-logo,
+  .home-nav,
+  .book-btn { opacity: 1; }
+
+  /* the collage and the footer piece are faded in by a
+     transition rather than an animation, but the reduce rule
+     switches transitions off too */
+  .art,
+  .plane { opacity: 1; }
+}
+
+
+/* ------------------------------------------------------------
+   11.11  Mobile footer arrangement
+
+   On a phone the footer reads bottom-up from the desktop
+   version: the two link groups come first, Nav set as two
+   columns of four and Socials as one column beneath it, and
+   the wordmark and contact line move to the foot of the page,
+   centred and small, as a sign-off. The flying piece sits out
+   to the right of the Socials list.
+
+   The link order in the grid comes from the markup: filling
+   two columns row by row puts Home / Services / Shop / The
+   Edge down the left and Contact / Kaha et al. / FAQs /
+   Workshops down the right without touching the HTML.
+   ------------------------------------------------------------ */
+
+@media (max-width: 640px) {
+  .site-footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: var(--space-xl) 8% var(--space-lg);
+  }
+
+  /* links up top, sign-off underneath */
+  .footer-links {
+    order: 1;
+    flex-direction: column;
+    gap: var(--space-lg);
+    margin: 0;
+    width: 100%;
+  }
+
+  .footer-brand {
+    order: 2;
+    margin-top: var(--space-xl);
+    text-align: center;
+  }
+
+  .footer-col {
+    flex: 0 0 auto;
+    min-width: 0;
+    width: 100%;
+  }
+
+  .footer-col h2 {
+    margin-bottom: var(--space-md);
+    font-size: var(--fs-h2);
+  }
+
+  /* Nav: two columns, filled row by row */
+  .footer-col:first-child ul {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--space-md);
+    row-gap: 0;
+  }
+
+  /* Socials stays a single column */
+  .footer-col + .footer-col ul { display: block; }
+
+  .footer-col li { line-height: 1.7; }
+  .footer-col a { display: inline-block; padding: 1px 0; }
+
+  /* the sign-off: wordmark centred and small, contact line
+     smaller still directly beneath it */
+  .footer-wordmark { align-items: center; }
+  .home-footer .footer-wordmark { line-height: 1.1; }
+  .home-footer .footer-wordmark span { font-size: 30px; }
+
+  .home-footer .footer-contact {
+    margin-top: var(--space-xs);
+    font-size: var(--fs-small);
+    line-height: 1.4;
+  }
+
+  /* the piece flies alongside the Socials list rather than in a
+     band of its own, so the footer closes up again */
+  .home-footer {
+    --footer-art-size: 128px;
+    --fly-height: 22px;
+    padding-bottom: var(--space-lg);
+  }
+
+  .footer-art {
+    top: auto;
+    bottom: 30%;
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 380px) {
+  /* the small-phone tier above stacks the two groups; the Nav
+     grid inside the first one stays */
+  .footer-links { flex-direction: column; gap: var(--space-lg); }
+  .home-footer .footer-wordmark span { font-size: 26px; }
+  .home-footer { --footer-art-size: 112px; }
+}
+
+
+/* ------------------------------------------------------------
+   11.12  Submit buttons on iOS
+
+   .submit-btn was the one button class that never set a colour
+   of its own. A <button> does not inherit colour the way a link
+   or a div does; it takes the browser's own default. Chrome's
+   default happens to be black, so the button looked right on a
+   desktop, but iOS Safari uses its system button colour and the
+   text vanished against the white page. The outline went with
+   it, because .pill draws its border in currentColor.
+
+   .tab and .text-btn already say color: inherit for exactly
+   this reason. This gives .submit-btn the same line, so it
+   picks up the ink colour from the form around it.
+   ------------------------------------------------------------ */
+
+.submit-btn {
+  /* every one of these is a way the button could go invisible,
+     closed off explicitly rather than left to inherit or to the
+     browser's own idea of what a button looks like */
+  -webkit-appearance: none;
+  appearance: none;
+  color: var(--ink);
+  -webkit-text-fill-color: var(--ink);
+  background-color: transparent;
+  border: 1px solid var(--ink);
+  opacity: 1;
+  visibility: visible;
+}
+
+/* the inverted state has to name its colour too, or the fill
+   colour above would keep the text black on a black pill */
+.submit-btn:hover,
+.submit-btn:focus-visible {
+  color: var(--paper);
+  -webkit-text-fill-color: var(--paper);
+  background-color: var(--ink);
+}
+
+/* a finger has no hover, so a tapped button returns to normal
+   rather than staying inverted */
+@media (hover: none) and (pointer: coarse) {
+  .submit-btn:hover {
+    color: var(--ink);
+    -webkit-text-fill-color: var(--ink);
+    background-color: transparent;
+  }
+}
+
+/* while sending, the button dims but keeps its own colours */
+.submit-btn:disabled {
+  opacity: 0.5;
+  -webkit-text-fill-color: var(--ink);
+}
+
+/* justify-content: stretch is not a real value for a flex
+   container, so it was a dead line sitting on the button's
+   parent. The button is full width here anyway. */
+@media (max-width: 640px) {
+  .form-actions { justify-content: flex-end; }
+}
+
+
+/* ------------------------------------------------------------
+   11.13  The footer sign-off on mobile
+
+   The reveal observer only counts an element as on screen once
+   it clears the bottom 8% of the viewport and is 12% visible.
+   On the phone layout the contact line is the very last thing
+   on the page, sitting a few pixels above the bottom edge, so
+   it never leaves that dead band however far you scroll and
+   never faded in. The wordmark above it cleared the band, which
+   is why it appeared and the line under it did not.
+
+   The Edge was the one page it worked on: its footer happens to
+   sit far enough up that the line scrapes past the cutoff.
+
+   Rather than pad the footer out and change the spacing, the
+   sign-off simply opts out of the reveal on mobile and is drawn
+   in place. No layout moves.
+   ------------------------------------------------------------ */
+
+@media (max-width: 640px) {
+  .js .footer-wordmark[data-reveal],
+  .js .footer-contact[data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}
+/* ==================================================================
+   SHOP — quantity control, order summary, payment step
+   Append to styles.css. Uses the existing navy / coral / EB Garamond
+   system; adjust the two variables below if your tokens are named
+   differently elsewhere in the file.
+   ================================================================== */
+
+.shop-page {
+  --shop-ink: #1e3a5f;
+  --shop-accent: #EC6454;
+  --shop-rule: rgba(30, 58, 95, 0.18);
+}
+
+/* ------------------------------------------------------- quantity */
+
+.qty-row {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  margin: 1.5rem 0 2rem;
+}
+
+.qty-label {
+  font-size: 0.95rem;
+  color: var(--shop-ink);
+  opacity: 0.75;
+}
+
+.qty-control {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid var(--shop-rule);
+  border-radius: 999px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.qty-btn {
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font: inherit;
+  font-size: 1.2rem;
+  line-height: 1;
+  padding: 0.55rem 1rem;
+  color: var(--shop-ink);
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.qty-btn:hover:not(:disabled) { background: var(--shop-accent); color: #fff; }
+.qty-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.qty-btn:focus-visible { outline: 2px solid var(--shop-accent); outline-offset: -2px; }
+
+.qty-input {
+  width: 3.2rem;
+  border: 0;
+  border-left: 1px solid var(--shop-rule);
+  border-right: 1px solid var(--shop-rule);
+  text-align: center;
+  font: inherit;
+  font-size: 1rem;
+  color: var(--shop-ink);
+  background: none;
+  -moz-appearance: textfield;
+}
+
+.qty-input::-webkit-outer-spin-button,
+.qty-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.qty-input:focus-visible { outline: 2px solid var(--shop-accent); outline-offset: -2px; }
+
+.qty-total {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--shop-ink);
+}
+
+/* -------------------------------------------------- order summary */
+
+.order-summary {
+  align-self: start;
+  position: sticky;
+  top: 6rem;
+  padding: 1.75rem;
+  border: 1px solid var(--shop-rule);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.summary-title {
+  margin: 0 0 1.25rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--shop-ink);
+}
+
+.summary-lines { margin: 0; }
+
+.summary-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.45rem 0;
+  font-size: 0.95rem;
+  color: var(--shop-ink);
+}
+
+.summary-line dt,
+.summary-line dd { margin: 0; }
+.summary-line dd { text-align: right; white-space: nowrap; }
+
+.summary-total {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 1rem 0 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--shop-rule);
+  font-size: 1.15rem;
+  color: var(--shop-ink);
+}
+
+.summary-edit {
+  margin-top: 1.25rem;
+  padding: 0;
+  font-size: 0.9rem;
+}
+
+/* --------------------------------------------------------- payment */
+
+.pay-actions {
+  margin-top: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.pay-note {
+  margin: 0;
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+
+.shop-btn.is-busy {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.shop-btn.is-busy::after {
+  content: "\2026";
+  margin-left: 0.35rem;
+}
+
+/* ------------------------------------------------------ responsive */
+
+@media (max-width: 860px) {
+  .order-summary { position: static; margin-top: 2rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .qty-btn, .shop-btn { transition: none; }
+}
+
+/* If .checkout-grid in styles.css is currently a single column (the old
+   page had an empty second column), the summary needs somewhere to sit:
+
+.checkout-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 20rem;
+  gap: 3rem;
+  align-items: start;
+}
+@media (max-width: 860px) {
+  .checkout-grid { grid-template-columns: 1fr; }
+}
+*/
+
