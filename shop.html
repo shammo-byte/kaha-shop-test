@@ -192,7 +192,7 @@
 .checkout-grid-single .order-summary {
   position: static;
   max-width: 26rem;
-  margin: 1.5rem 0 2rem;
+  margin: 0 0 2.5rem;
 }
 .step-actions-top { margin: 1.5rem 0 0.75rem; }
 </style>
@@ -427,19 +427,6 @@
     <section class="shop-step" id="stepPayment" hidden>
       <div class="checkout-grid checkout-grid-single">
         <div class="checkout-main">
-          <p class="step-eyebrow">Step 2 of 2</p>
-          <h2 class="step-title">Payment</h2>
-          <p class="step-intro">Your delivery details are saved. Check the summary, then pay to place the order.</p>
-
-          <div class="step-actions step-actions-top">
-            <button type="button" class="text-btn" id="backToDelivery">&larr; Edit delivery details</button>
-          </div>
-
-          <p class="secure-note">
-            Payments are processed by Razorpay over an encrypted connection.
-            Kaha Mind never sees or stores your card or UPI details.
-          </p>
-
           <aside class="order-summary" aria-label="Order summary">
             <h3 class="summary-title">Order summary</h3>
             <dl class="summary-lines">
@@ -463,6 +450,18 @@
             <button type="button" class="text-btn summary-edit" data-summary-edit>Change quantity</button>
           </aside>
 
+          <p class="step-eyebrow">Step 2 of 2</p>
+          <h2 class="step-title">Payment</h2>
+          <p class="step-intro">Your delivery details are saved. Check the summary, then pay to place the order.</p>
+
+          <div class="step-actions step-actions-top">
+            <button type="button" class="text-btn" id="backToDelivery">&larr; Edit delivery details</button>
+          </div>
+
+          <p class="secure-note">
+            Payments are processed by Razorpay over an encrypted connection.
+            Kaha Mind never sees or stores your card or UPI details.
+          </p>
           <div class="pay-actions">
             <button type="button" class="pill pill-lg submit-btn shop-btn" id="payNow">
               Pay &#8377;<span id="payAmountLabel">1,499</span>
