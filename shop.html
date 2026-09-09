@@ -187,6 +187,14 @@
   .checkout-grid { grid-template-columns: 1fr; }
 }
 */
+/* Payment step: one column, summary above the pay button. */
+.checkout-grid-single { grid-template-columns: minmax(0, 1fr); }
+.checkout-grid-single .order-summary {
+  position: static;
+  max-width: 26rem;
+  margin: 1.5rem 0 2rem;
+}
+.step-actions-top { margin: 1.5rem 0 0.75rem; }
 </style>
 <script>document.documentElement.className += " js";</script>
 </head>
@@ -417,36 +425,13 @@
          STEP 3 — PAYMENT
          ============================================================ -->
     <section class="shop-step" id="stepPayment" hidden>
-      <div class="checkout-grid">
+      <div class="checkout-grid checkout-grid-single">
         <div class="checkout-main">
           <p class="step-eyebrow">Step 2 of 2</p>
           <h2 class="step-title">Payment</h2>
           <p class="step-intro">Your delivery details are saved. Check the summary, then pay to place the order.</p>
 
-          <div class="pay-handoff">
-            <p class="pay-handoff-lead">Everything below is handled by Razorpay:</p>
-            <ul class="pay-accepted">
-              <li>UPI, including Google Pay, PhonePe, Paytm and any other UPI app</li>
-              <li>Debit and credit cards, including Visa, Mastercard, RuPay, Amex</li>
-              <li>Net banking and wallets.</li>
-            </ul>
-
-            <div class="pay-actions">
-              <button type="button" class="pill pill-lg submit-btn shop-btn" id="payNow">
-                Pay &#8377;<span id="payAmountLabel">1,499</span>
-              </button>
-              <p class="pay-note">The Razorpay window opens on this page. Nothing is charged until you confirm it there.</p>
-            </div>
-
-            <p class="pay-fallback" id="payFallback" hidden>
-              The payment window couldn't load. Reload the page, or write to
-              <a href="mailto:hello@kahamind.com">hello@kahamind.com</a> and we'll send you a payment link.
-            </p>
-          </div>
-
-          <div id="paymentError" class="form-error" hidden></div>
-
-          <div class="step-actions">
+          <div class="step-actions step-actions-top">
             <button type="button" class="text-btn" id="backToDelivery">&larr; Edit delivery details</button>
           </div>
 
@@ -454,31 +439,44 @@
             Payments are processed by Razorpay over an encrypted connection.
             Kaha Mind never sees or stores your card or UPI details.
           </p>
-        </div>
 
-        <aside class="order-summary" aria-label="Order summary">
-          <h3 class="summary-title">Order summary</h3>
-          <dl class="summary-lines">
-            <div class="summary-line">
-              <dt data-summary="name">Metal Health Cap</dt>
-              <dd>&#8377;<span data-summary="unit"></span> &times; <span data-summary="qty"></span></dd>
-            </div>
-            <div class="summary-line">
-              <dt>Subtotal</dt>
-              <dd>&#8377;<span data-summary="subtotal"></span></dd>
-            </div>
-            <div class="summary-line">
-              <dt>Shipping</dt>
-              <dd data-summary="shipping"></dd>
-            </div>
-          </dl>
-          <p class="summary-total">
-            <span>Total</span>
-            <span>&#8377;<span data-summary="total"></span></span>
+          <aside class="order-summary" aria-label="Order summary">
+            <h3 class="summary-title">Order summary</h3>
+            <dl class="summary-lines">
+              <div class="summary-line">
+                <dt data-summary="name">Metal Health Cap</dt>
+                <dd>&#8377;<span data-summary="unit"></span> &times; <span data-summary="qty"></span></dd>
+              </div>
+              <div class="summary-line">
+                <dt>Subtotal</dt>
+                <dd>&#8377;<span data-summary="subtotal"></span></dd>
+              </div>
+              <div class="summary-line">
+                <dt>Shipping</dt>
+                <dd data-summary="shipping"></dd>
+              </div>
+            </dl>
+            <p class="summary-total">
+              <span>Total</span>
+              <span>&#8377;<span data-summary="total"></span></span>
+            </p>
+            <button type="button" class="text-btn summary-edit" data-summary-edit>Change quantity</button>
+          </aside>
+
+          <div class="pay-actions">
+            <button type="button" class="pill pill-lg submit-btn shop-btn" id="payNow">
+              Pay &#8377;<span id="payAmountLabel">1,499</span>
+            </button>
+            <p class="pay-note">The Razorpay window opens on this page. Nothing is charged until you confirm it there.</p>
+          </div>
+
+          <p class="pay-fallback" id="payFallback" hidden>
+            The payment window couldn't load. Reload the page, or write to
+            <a href="mailto:hello@kahamind.com">hello@kahamind.com</a> and we'll send you a payment link.
           </p>
-          <button type="button" class="text-btn summary-edit" data-summary-edit>Change quantity</button>
-        </aside>
 
+          <div id="paymentError" class="form-error" hidden></div>
+        </div>
       </div>
     </section>
 
@@ -683,7 +681,7 @@
 
   var CONFIG = {
     // Your Apps Script web app URL. Must end in /exec.
-    apiUrl: "https://script.google.com/macros/s/AKfycbx_omG3DNe6IKOzKkTgsdm54GY4ib9rE4iE0wOu1YzHq94Da_nuMz5tWiB5rjXAbJd-fw/exec",
+    apiUrl: "https://script.google.com/macros/s/REPLACE_ME/exec",
     productId: "metal-health-cap",
     productName: "Metal Health Cap",
     unitPrice: 1499,     // rupees, display only
