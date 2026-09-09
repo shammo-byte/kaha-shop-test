@@ -187,14 +187,26 @@
   .checkout-grid { grid-template-columns: 1fr; }
 }
 */
-/* Payment step: one column, summary above the pay button. */
-.checkout-grid-single { grid-template-columns: minmax(0, 1fr); }
-.checkout-grid-single .order-summary {
-  position: static;
-  max-width: 26rem;
-  margin: 0 0 2.5rem;
+/* Checkout layout: form on the left, order summary on the right. */
+.shop-page .checkout-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 20rem;
+  gap: 3rem;
+  align-items: start;
 }
+
+.shop-page .checkout-grid .order-summary {
+  position: sticky;
+  top: 6rem;
+  margin: 0;
+}
+
 .step-actions-top { margin: 1.5rem 0 0.75rem; }
+
+@media (max-width: 900px) {
+  .shop-page .checkout-grid { grid-template-columns: minmax(0, 1fr); gap: 2rem; }
+  .shop-page .checkout-grid .order-summary { position: static; order: -1; max-width: none; }
+}
 </style>
 <script>document.documentElement.className += " js";</script>
 </head>
@@ -425,30 +437,8 @@
          STEP 3 — PAYMENT
          ============================================================ -->
     <section class="shop-step" id="stepPayment" hidden>
-      <div class="checkout-grid checkout-grid-single">
+      <div class="checkout-grid">
         <div class="checkout-main">
-          <aside class="order-summary" aria-label="Order summary">
-            <h3 class="summary-title">Order summary</h3>
-            <dl class="summary-lines">
-              <div class="summary-line">
-                <dt data-summary="name">Metal Health Cap</dt>
-                <dd>&#8377;<span data-summary="unit"></span> &times; <span data-summary="qty"></span></dd>
-              </div>
-              <div class="summary-line">
-                <dt>Subtotal</dt>
-                <dd>&#8377;<span data-summary="subtotal"></span></dd>
-              </div>
-              <div class="summary-line">
-                <dt>Shipping</dt>
-                <dd data-summary="shipping"></dd>
-              </div>
-            </dl>
-            <p class="summary-total">
-              <span>Total</span>
-              <span>&#8377;<span data-summary="total"></span></span>
-            </p>
-            <button type="button" class="text-btn summary-edit" data-summary-edit>Change quantity</button>
-          </aside>
 
           <p class="step-eyebrow">Step 2 of 2</p>
           <h2 class="step-title">Payment</h2>
@@ -476,6 +466,30 @@
 
           <div id="paymentError" class="form-error" hidden></div>
         </div>
+
+        <aside class="order-summary" aria-label="Order summary">
+          <h3 class="summary-title">Order summary</h3>
+          <dl class="summary-lines">
+            <div class="summary-line">
+              <dt data-summary="name">Metal Health Cap</dt>
+              <dd>&#8377;<span data-summary="unit"></span> &times; <span data-summary="qty"></span></dd>
+            </div>
+            <div class="summary-line">
+              <dt>Subtotal</dt>
+              <dd>&#8377;<span data-summary="subtotal"></span></dd>
+            </div>
+            <div class="summary-line">
+              <dt>Shipping</dt>
+              <dd data-summary="shipping"></dd>
+            </div>
+          </dl>
+          <p class="summary-total">
+            <span>Total</span>
+            <span>&#8377;<span data-summary="total"></span></span>
+          </p>
+          <button type="button" class="text-btn summary-edit" data-summary-edit>Change quantity</button>
+        </aside>
+
       </div>
     </section>
 
